@@ -38,6 +38,34 @@ export class RubiksCube {
             && this.frontFace.values[5] == 1
             && this.frontFace.values[7] == 1;
     }
+
+    setAllCorners(value: (0|1)) {
+        let newState = this.frontFace.values;
+        newState[0] = value;
+        newState[2] = value;
+        newState[6] = value;
+        newState[8] = value;
+
+        this.frontFace.values = newState;
+    }
+
+    allCornersFilled(): boolean {
+        return this.frontFace.values[0] == 1
+            && this.frontFace.values[2] == 1
+            && this.frontFace.values[6] == 1
+            && this.frontFace.values[8] == 1;
+    }
+
+    setAllPieces(value: (0|1)) {
+        this.setAllEdges(value);
+        this.setAllCorners(value);
+        // center piece
+        this.frontFace.values[4] = value;
+    }
+
+    allPiecesFilled(): boolean {
+        return this.allEdgesFilled() && this.allCornersFilled();
+    }
 }
 
 export class FrontFace {
