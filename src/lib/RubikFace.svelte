@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {RubiksCube, AdjacentFacets, FrontFace} from "./models/RubiksCube";
+    import {RubiksCube, AdjacentFacets, FrontFace} from "./models/RubiksCube.svelte.js";
     import {RubiksConstants} from "./models/RubiksConstants";
     import AdjacentFace from "./AdjacentFace.svelte";
 
@@ -9,13 +9,9 @@
     let leftSide: AdjacentFacets = new AdjacentFacets("left", [0, 0, 0]);
     let frontSide: FrontFace = new FrontFace([0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-    let rubiksCube = new RubiksCube(frontSide, topSide, rightSide, bottomSide, leftSide);
-
-
-    function getColor(val: 0 | 1): string {
-        return val === 1 ? "#FFE600" : "#4A4A4A";
-    }
-
+    let rubiksCube = $state(
+        new RubiksCube(frontSide, topSide, rightSide, bottomSide, leftSide)
+    );
 
 </script>
 
@@ -29,21 +25,24 @@
                     tabindex="0"
                     class="cursor-pointer focus:outline-none"
                     aria-label="grid-{i}"
-                    on:click={() => rubiksCube.toggleFace(i)}
-                    on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && rubiksCube.toggleFace(i)}
+                    onclick={() => {
+                        rubiksCube.toggleFace(i);
+                        rubiksCube = rubiksCube;
+                    }}
+                    onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && rubiksCube.toggleFace(i)}
             >
                 <rect
                         x={RubiksConstants.GridOffset + (i % 3) * RubiksConstants.FaceSize}
                         y={RubiksConstants.GridOffset + Math.floor(i / 3) * RubiksConstants.FaceSize}
                         width={RubiksConstants.FaceSize}
                         height={RubiksConstants.FaceSize}
-                        fill={getColor(val)}
+                        fill={RubiksConstants.getColor(val)}
                         stroke={RubiksConstants.FaceStrokeColor}
                         stroke-width={RubiksConstants.FaceStrokeWidth}
                 />
             </g>
         {/each}
 
-        <AdjacentFace face={topSide} toggleSide={rubiksCube.toggleFace} />
+                <AdjacentFace face={topSide} />
     </svg>
 </div>

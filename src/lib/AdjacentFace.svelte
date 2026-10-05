@@ -1,14 +1,14 @@
 <script lang="ts">
 
-    import {AdjacentFacets} from "./models/RubiksCube";
+    import {AdjacentFacets} from "./models/RubiksCube.svelte.js";
     import {RubiksConstants} from "./models/RubiksConstants";
 
     type Props = {
         face: AdjacentFacets,
-        toggleSide: Function,
+        // toggleSide: Function,
     }
 
-    let { face = $bindable(), toggleSide }: Props = $props();
+    let { face = $bindable() }: Props = $props();
 
 </script>
 
@@ -18,8 +18,8 @@
             tabindex="0"
             class="cursor-pointer focus:outline-none"
             aria-label="top-side-{i}"
-            onclick={() => toggleSide('top', i)}
-            onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleSide('top', i)}
+            onclick={() => face.toggleValue(i)}
+            onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && face.toggleValue(i)}
     >
         <polygon
                 points={RubiksConstants.getTabPoints('top', i)}

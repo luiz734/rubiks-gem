@@ -1,4 +1,4 @@
-import type {SideLocation} from "./RubiksCube";
+import type {SideLocation} from "./RubiksCube.svelte.js";
 
 export class RubiksConstants {
     public static readonly FaceSize = 100;

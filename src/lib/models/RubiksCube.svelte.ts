@@ -24,17 +24,15 @@ export class RubiksCube {
 }
 
 export class FrontFace {
-    constructor(
-        public readonly values: (0|1)[]
-    ) {}
+    values = $state<(0 | 1)[]>([]);
 
-    public toggleValue(index: number): FrontFace {
-        if (index < 0 || index >= this.values.length) return this;
+    constructor(initialValues: (0 | 1)[]) {
+        this.values = initialValues;
+    }
 
-        const newValues = [...this.values];
-        newValues[index] = newValues[index] === 1 ? 0 : 1;
-
-        return new FrontFace(newValues);
+    public toggleValue(index: number): void {
+        if (index < 0 || index >= this.values.length) return;
+        this.values[index] = this.values[index] === 1 ? 0 : 1;
     }
 
     public getValue(index: number): number {
@@ -43,18 +41,17 @@ export class FrontFace {
 }
 
 export class AdjacentFacets {
-    constructor(
-        public readonly side: SideLocation,
-        public readonly values: (0|1)[]
-    ) {}
+    values = $state<(0 | 1)[]>([]);
+    public readonly side: SideLocation;
 
-    public toggleValue(index: number): AdjacentFacets {
-        if (index < 0 || index >= this.values.length) return this;
+    constructor(side: SideLocation, initialValues: (0 | 1)[]) {
+        this.values = initialValues;
+        this.side = side;
+    }
 
-        const newValues = [...this.values];
-        newValues[index] = newValues[index] === 1 ? 0 : 1;
-
-        return new AdjacentFacets(this.side, newValues);
+    public toggleValue(index: number): void {
+        if (index < 0 || index >= this.values.length) return;
+        this.values[index] = this.values[index] === 1 ? 0 : 1;
     }
 
     public getValue(index: number): number {
