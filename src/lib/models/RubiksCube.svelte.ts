@@ -1,6 +1,7 @@
 export type SideLocation = 'top' | 'right' | 'bottom' | 'left';
 
 export class RubiksCube {
+
     constructor(
         public frontFace: FrontFace,
 
@@ -20,6 +21,22 @@ export class RubiksCube {
 
     public toggleFace(faceIndex: number): void {
         this.frontFace.toggleValue(faceIndex);
+    }
+
+    setAllEdges(value: (0|1)) {
+        let newState = this.frontFace.values;
+        newState[1] = value;
+        newState[3] = value;
+        newState[5] = value;
+        newState[7] = value;
+
+        this.frontFace.values = newState;
+    }
+    allEdgesFilled(): boolean {
+        return this.frontFace.values[1] == 1
+            && this.frontFace.values[3] == 1
+            && this.frontFace.values[5] == 1
+            && this.frontFace.values[7] == 1;
     }
 }
 
