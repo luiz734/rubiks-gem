@@ -72,11 +72,11 @@ export type ActiveMode = 'oll' | 'pll'
 
 export type Arrow = { from: number; to: number }
 export type ArrowStyle = {
-    color: string;
-    headColor: string;
-    width: number;
-    offset: number;      // px trimmed from each end, measured from the piece centers
-};
+    color: string
+    headColor: string
+    width: number
+    offset: number // px trimmed from each end, measured from the piece centers
+}
 
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
@@ -110,7 +110,7 @@ export class RubiksCube {
         headColor: '#001AFF',
         width: 12,
         offset: 10,
-    });
+    })
 
     constructor(mode: ActiveMode) {
         this.state = [
@@ -128,7 +128,7 @@ export class RubiksCube {
         ]
 
         this.mode = mode
-        $inspect(this.arrows);
+        $inspect(this.arrows)
         // $inspect(this.rotation);
     }
 
@@ -188,8 +188,11 @@ export class RubiksCube {
     // oll all pieces should always face top
     clickFront(displayIndex: number) {
         const i = this.sourceIndex(displayIndex)
-        if (this.mode === 'oll') this.pointPiece(i, 'front')
-        else this.clickPll(i)
+        if (this.mode === 'oll') {
+            this.pointPiece(i, 'front')
+        } else {
+            this.clickPll(i)
+        }
     }
     private clickPll(i: number) {
         if (this.pendingFrom === null) {
@@ -206,8 +209,19 @@ export class RubiksCube {
             (a) => a.from === from && a.to === i
         )
         // same arrow again: remove it
-        if (existing >= 0) this.arrows.splice(existing, 1)
-        else this.arrows.push({ from, to: i })
+        if (existing >= 0) {
+            this.arrows.splice(existing, 1)
+            // Removes a -> b
+            // Also removes b -> a
+            const otherWay = this.arrows.findIndex(
+                (a) => a.from === i && a.to === from
+            )
+            if (otherWay !== -1) {
+                this.arrows.splice(otherWay, 1)
+            }
+        } else {
+            this.arrows.push({ from, to: i })
+        }
     }
 
     clearArrows() {
