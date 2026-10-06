@@ -4,6 +4,7 @@
     import RubikFace from "./lib/RubikFace.svelte";
     import FacesButtons from "./lib/FacesButtons.svelte";
     import {Piece, RubiksCube} from "./lib/models/RubiksCube.svelte";
+    import RotationSlider from "./lib/RotationSlider.svelte";
 
 
     let rubiksCube = $state(
@@ -19,4 +20,5 @@
         <RubikFace rubiksCube={rubiksCube}/>
     </div>
     <FacesButtons rubiksCube={rubiksCube}/>
+    <RotationSlider rubiksCube={rubiksCube}/>
 </div>

@@ -68,21 +68,77 @@ const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
     left: [0, 3, 6],
 }
 
+const SIDES: SideLocation[] = ['top', 'right', 'bottom', 'left']
+export type RotationAngle = 0 | 90 | 180 | 270
+
 export class RubiksCube {
     state = $state<Piece[]>([])
+    rotation: RotationAngle = $state<RotationAngle>(0)
+
+    private get steps() {
+        return this.rotation / 90
+    }
+    private sourceIndex(display: number): number {
+        let r = Math.floor(display / 3),
+            c = display % 3
+        for (let s = 0; s < this.steps; s++) [r, c] = [2 - c, r] // undo one CW turn
+        return r * 3 + c
+    }
+    private sourceSide(side: SideLocation): SideLocation {
+        return SIDES[(SIDES.indexOf(side) - this.steps + 4) % 4]
+    }
+
 
     constructor() {
         this.state = [
             new Piece('corner'),
             new Piece('edge'),
             new Piece('corner'),
+
             new Piece('edge'),
             new Piece('center'),
             new Piece('edge'),
+
             new Piece('corner'),
             new Piece('edge'),
             new Piece('corner'),
         ]
+    }
+
+    private rotateCube(angle: RotationAngle): Piece[] {
+        const normalizedAngle = (((angle % 360) + 360) % 360) as RotationAngle
+        if (normalizedAngle === 0) {
+            return [...this.state]
+        }
+
+        const rotated = new Array<Piece>(9)
+
+        for (let i = 0; i < 9; i++) {
+            const row = Math.floor(i / 3)
+            const col = i % 3
+            let newRow = row
+            let newCol = col
+
+            switch (normalizedAngle) {
+                case 90:
+                    newRow = col
+                    newCol = 2 - row
+                    break
+                case 180:
+                    newRow = 2 - row
+                    newCol = 2 - col
+                    break
+                case 270:
+                    newRow = 2 - col
+                    newCol = row
+                    break
+            }
+
+            const newIndex = newRow * 3 + newCol
+            rotated[newIndex] = this.state[i]
+        }
+
+        return rotated
     }
 
     private markerFace(i: number): Face {
@@ -90,14 +146,15 @@ export class RubiksCube {
     }
 
     getFrontState(): FacetValue[] {
-        return this.state.map((_, i) =>
-            this.markerFace(i) === 'front' ? 1 : 0
+        return this.state.map((_, d) =>
+            this.markerFace(this.sourceIndex(d)) === 'front' ? 1 : 0
         )
     }
 
     getSideState(which: SideLocation): FacetValue[] {
-        return SIDE_INDICES[which].map((i) =>
-            this.markerFace(i) === which ? 1 : 0
+        const src = this.sourceSide(which)
+        return SIDE_INDICES[which].map((d) =>
+            this.markerFace(this.sourceIndex(d)) === src ? 1 : 0
         )
     }
 
@@ -111,8 +168,8 @@ export class RubiksCube {
         this.pointPiece(i, side)
     }
 
-    public toggleFace(faceIndex: number): void {
-        this.pointPiece(faceIndex, 'front')
+    toggleFace(displayIndex: number) {
+        this.state[this.sourceIndex(displayIndex)].rotateCW()
     }
 
     setAllEdges(value: 0 | 1) {
@@ -123,6 +180,10 @@ export class RubiksCube {
                 this.state[i].lastRotationState()
             }
         })
+    }
+
+    rotateBy(delta: 90 | -90) {
+        this.rotation = ((this.rotation + delta + 360) % 360) as RotationAngle
     }
 
     allEdgesFilled(): boolean {
