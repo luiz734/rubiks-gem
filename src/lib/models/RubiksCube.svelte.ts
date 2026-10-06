@@ -79,10 +79,12 @@ export type ArrowStyle = {
 }
 
 export type ArrowGroup = {
-    kind: 'single' | 'double';
-    from: number; to: number;
-    srcFrom: number; srcTo: number;
-};
+    kind: 'single' | 'double'
+    from: number
+    to: number
+    srcFrom: number
+    srcTo: number
+}
 
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
@@ -279,34 +281,47 @@ export class RubiksCube {
     allPiecesFilled(): boolean {
         return this.allEdgesFilled() && this.allCornersFilled()
     }
-    ollMode(): boolean {
-        return this.mode === 'oll';
+    get ollMode() {
+        return this.#mode === 'oll'
     }
 
-    get pllMode() { return this.#mode === 'pll'; }
+    get pllMode() {
+        return this.#mode === 'pll'
+    }
+
     get arrowGroups(): ArrowGroup[] {
-        const groups: ArrowGroup[] = [];
-        const used = new Set<number>();
+        const groups: ArrowGroup[] = []
+        const used = new Set<number>()
 
         this.arrows.forEach((a, k) => {
-            if (used.has(k)) return;
+            if (used.has(k)) return
             const r = this.arrows.findIndex(
-                (b, j) => j > k && !used.has(j) && b.from === a.to && b.to === a.from);
-            if (r >= 0) used.add(r);
+                (b, j) =>
+                    j > k && !used.has(j) && b.from === a.to && b.to === a.from
+            )
+            if (r >= 0) used.add(r)
             groups.push({
                 kind: r >= 0 ? 'double' : 'single',
-                from: this.displayIndex(a.from), to: this.displayIndex(a.to),
-                srcFrom: a.from, srcTo: a.to,
-            });
-        });
-        return groups;
+                from: this.displayIndex(a.from),
+                to: this.displayIndex(a.to),
+                srcFrom: a.from,
+                srcTo: a.to,
+            })
+        })
+        return groups
     }
 
-    /** removes the arrow, and its reverse if present (so a double arrow goes in one click) */
     removeArrow(srcFrom: number, srcTo: number) {
         this.arrows = this.arrows.filter(
-            (a) => !((a.from === srcFrom && a.to === srcTo) ||
-                (a.from === srcTo && a.to === srcFrom)));
+            (a) =>
+                !(
+                    (a.from === srcFrom && a.to === srcTo) ||
+                    (a.from === srcTo && a.to === srcFrom)
+                )
+        )
     }
 
+    removeAllArrows() {
+        this.arrows = []
+    }
 }
