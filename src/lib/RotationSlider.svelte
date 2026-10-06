@@ -32,8 +32,6 @@
         <input class="range" max="270" min="0" step="90" type="range" bind:value={rubiksCube.rotation}/>
     </div>
 
-    {rubiksCube.rotation}
-
     <div class="flex flex-row w-full justify-between">
         <button class="btn" onclick={() => rubiksCube.rotateBy(-90)}><RotateCcw/></button>
         <button class="btn" onclick={() => (rubiksCube.rotation = 0)}>Reset</button>

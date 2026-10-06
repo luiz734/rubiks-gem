@@ -162,4 +162,15 @@ export class RubiksCube {
     allCornersFilled(): boolean {
         return RubiksCube.CORNERS.every((i) => this.state[i].isFacingUp())
     }
+
+    setAllPieces(value: 0 | 1) {
+        this.setAllEdges(value)
+        this.setAllCorners(value)
+        // center piece
+        // this.state.values[4] = value;
+    }
+
+    allPiecesFilled(): boolean {
+        return this.allEdgesFilled() && this.allCornersFilled()
+    }
 }
