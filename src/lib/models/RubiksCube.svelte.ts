@@ -1,105 +1,139 @@
 export type SideLocation = 'top' | 'right' | 'bottom' | 'left';
 
-export class RubiksCube {
+export type PieceIndex = 0|1|2|3|4|5|6|7|8;
+export type PieceType = 'center' | 'edge' | 'corner';
+export type FacetValue = 0|1;
 
-    constructor(
-        public frontFace: FrontFace,
+export class Piece {
+    flipIndex = $state<number>(0);
+    readonly flipCycle : 1|2|3;
+    type: PieceType;
 
-        public adjacentTop: AdjacentFacets,
-        public adjacentRight: AdjacentFacets,
-        public adjacentBottom: AdjacentFacets,
-        public adjacentLeft: AdjacentFacets,
-    ) {
+    constructor(type: PieceType) {
+        this.type = type;
+
+        switch (type) {
+            case 'center': this.flipCycle = 1; break;
+            case 'edge': this.flipCycle = 2; break;
+            case 'corner': this.flipCycle = 3; break;
+        }
     }
 
-    public toggleSide(side: SideLocation, i: number): void {
-        if (side === 'top') this.adjacentTop.toggleValue(i);
-        if (side === 'right') this.adjacentRight.toggleValue(i);
-        if (side === 'bottom') this.adjacentBottom.toggleValue(i);
-        if (side === 'left') this.adjacentLeft.toggleValue(i);
+    rotateCW() {
+        this.flipIndex = (this.flipIndex + 1) % this.flipCycle;
+    }
+    rotateCCW() {
+        this.flipIndex = (this.flipIndex - 1 + this.flipCycle) % this.flipCycle;
+    }
+
+    firstRotationState() {
+        this.flipIndex = 0;
+    }
+    lastRotationState() {
+        if (this.flipCycle === 1) return;
+        this.firstRotationState()
+        this.rotateCW();
+    }
+
+
+    isFacingUp(): boolean {
+        return this.flipIndex === 0;
+    }
+}
+
+const CORNER_SIDES: Partial<Record<number, [SideLocation, SideLocation]>> = {
+    // [side at flipIndex 1, side at flipIndex 2]
+    0: ['left', 'top'],
+    2: ['top', 'right'],
+    6: ['bottom', 'left'],
+    8: ['right', 'bottom'],
+};
+
+const EDGE_SIDE: Partial<Record<number, SideLocation>> = {
+    1: 'top', 3: 'left', 5: 'right', 7: 'bottom',
+};
+
+// piece indices touching each side, in reading order
+// (top/bottom: left→right, left/right: top→bottom)
+const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
+    top:    [0, 1, 2],
+    right:  [2, 5, 8],
+    bottom: [6, 7, 8],
+    left:   [0, 3, 6],
+};
+
+
+export class RubiksCube {
+    state = $state<Piece[]>([]);
+
+    constructor(
+    ) {
+        this.state = [
+            new Piece("corner"), new Piece("edge"), new Piece("corner"),
+            new Piece("edge"), new Piece("center"), new Piece("edge"),
+            new Piece("corner"), new Piece("edge"), new Piece("corner"),
+        ]
+    }
+
+    /** Where the marked sticker of piece `i` currently is. */
+    private markerSide(i: number): 'front' | SideLocation | null {
+        const p = this.state[i];
+        if (p.flipIndex === 0) return 'front';
+
+        if (p.type === 'edge') return EDGE_SIDE[i] ?? null;
+        if (p.type === 'corner') return CORNER_SIDES[i]?.[p.flipIndex - 1] ?? null;
+        return null; // center
+    }
+
+    getFrontState(): FacetValue[] {
+        return this.state.map((p) => (p.isFacingUp() ? 1 : 0));
+    }
+
+    getSideState(which: SideLocation): FacetValue[] {
+        return SIDE_INDICES[which].map((i) => (this.markerSide(i) === which ? 1 : 0));
     }
 
     public toggleFace(faceIndex: number): void {
-        this.frontFace.toggleValue(faceIndex);
+        this.state[faceIndex].rotateCW();
+        console.log($state.snapshot(this.state));
     }
 
     setAllEdges(value: (0|1)) {
-        let newState = this.frontFace.values;
-        newState[1] = value;
-        newState[3] = value;
-        newState[5] = value;
-        newState[7] = value;
-
-        this.frontFace.values = newState;
+        [1, 3, 5, 7].map((i) => {
+            if (value === 1) {
+                this.state[i].firstRotationState();
+            } else {
+                this.state[i].lastRotationState();
+            }
+        })
     }
+
     allEdgesFilled(): boolean {
-        return this.frontFace.values[1] == 1
-            && this.frontFace.values[3] == 1
-            && this.frontFace.values[5] == 1
-            && this.frontFace.values[7] == 1;
+        return [1, 3, 5, 7].every((i) => this.state[i].isFacingUp());
     }
 
     setAllCorners(value: (0|1)) {
-        let newState = this.frontFace.values;
-        newState[0] = value;
-        newState[2] = value;
-        newState[6] = value;
-        newState[8] = value;
-
-        this.frontFace.values = newState;
+        [0, 2, 6, 8].map((i) => {
+            if (value === 1) {
+                this.state[i].firstRotationState();
+            } else {
+                this.state[i].lastRotationState();
+            }
+        })
     }
 
     allCornersFilled(): boolean {
-        return this.frontFace.values[0] == 1
-            && this.frontFace.values[2] == 1
-            && this.frontFace.values[6] == 1
-            && this.frontFace.values[8] == 1;
+        return [0, 2, 6, 8].every((i) => this.state[i].isFacingUp());
     }
 
     setAllPieces(value: (0|1)) {
         this.setAllEdges(value);
         this.setAllCorners(value);
         // center piece
-        this.frontFace.values[4] = value;
+        // this.state.values[4] = value;
     }
 
     allPiecesFilled(): boolean {
         return this.allEdgesFilled() && this.allCornersFilled();
-    }
-}
-
-export class FrontFace {
-    values = $state<(0 | 1)[]>([]);
-
-    constructor(initialValues: (0 | 1)[]) {
-        this.values = initialValues;
-    }
-
-    public toggleValue(index: number): void {
-        if (index < 0 || index >= this.values.length) return;
-        this.values[index] = this.values[index] === 1 ? 0 : 1;
-    }
-
-    public getValue(index: number): number {
-        return this.values[index] ?? 0;
-    }
-}
-
-export class AdjacentFacets {
-    values = $state<(0 | 1)[]>([]);
-    public readonly side: SideLocation;
-
-    constructor(side: SideLocation, initialValues: (0 | 1)[]) {
-        this.values = initialValues;
-        this.side = side;
-    }
-
-    public toggleValue(index: number): void {
-        if (index < 0 || index >= this.values.length) return;
-        this.values[index] = this.values[index] === 1 ? 0 : 1;
-    }
-
-    public getValue(index: number): number {
-        return this.values[index] ?? 0;
     }
 }

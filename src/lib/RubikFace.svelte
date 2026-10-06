@@ -15,7 +15,7 @@
     <svg height={RubiksConstants.ViewportSize}
          viewBox="0 0 {RubiksConstants.ViewportSize} {RubiksConstants.ViewportSize}"
          width={RubiksConstants.ViewportSize}>
-        {#each rubiksCube.frontFace.values as val, i}
+        {#each rubiksCube.getFrontState() as val, i}
             <g
                     role="button"
                     tabindex="0"
@@ -39,9 +39,10 @@
             </g>
         {/each}
 
-                <AdjacentFace face={rubiksCube.adjacentTop} />
-                <AdjacentFace face={rubiksCube.adjacentRight} />
-                <AdjacentFace face={rubiksCube.adjacentBottom} />
-                <AdjacentFace face={rubiksCube.adjacentLeft} />
+                <AdjacentFace rubiksCube={rubiksCube} side="top" />
+                <AdjacentFace rubiksCube={rubiksCube} side="right" />
+                <AdjacentFace rubiksCube={rubiksCube} side="bottom" />
+                <AdjacentFace rubiksCube={rubiksCube} side="left" />
+
     </svg>
 </div>
