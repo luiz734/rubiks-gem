@@ -3,6 +3,7 @@
     import {RubiksConstants} from "./models/RubiksConstants";
     import AdjacentFace from "./AdjacentFace.svelte";
     import {RubiksCube} from "./models/RubiksCube.svelte";
+    import Arrows from "./Arrows.svelte";
 
     type Props = {
         rubiksCube: RubiksCube
@@ -30,11 +31,15 @@
                         width={RubiksConstants.FaceSize}
                         height={RubiksConstants.FaceSize}
                         fill={RubiksConstants.getColor(val)}
-                        stroke={RubiksConstants.FaceStrokeColor}
-                        stroke-width={RubiksConstants.FaceStrokeWidth}
+                        stroke={rubiksCube.isPending(i) ? 'orange' : RubiksConstants.FaceStrokeColor}
+                        stroke-width={rubiksCube.isPending(i) ? 4 : RubiksConstants.FaceStrokeWidth}
                 />
             </g>
         {/each}
+
+        {#if rubiksCube.mode === 'pll'}
+            <Arrows {rubiksCube}/>
+        {/if}
 
         {#if rubiksCube.mode === "oll"}
             <AdjacentFace rubiksCube={rubiksCube} side="top"/>

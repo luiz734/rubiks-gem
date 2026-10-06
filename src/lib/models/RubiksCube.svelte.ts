@@ -68,7 +68,9 @@ const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
 
 const SIDES: SideLocation[] = ['top', 'right', 'bottom', 'left']
 export type RotationAngle = 0 | 90 | 180 | 270
-export type ActiveMode = "oll" | "pll";
+export type ActiveMode = 'oll' | 'pll'
+
+export type Arrow = { from: number; to: number }
 
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
@@ -77,21 +79,26 @@ export class RubiksCube {
     state = $state<Piece[]>([])
     rotation: RotationAngle = $state<RotationAngle>(0)
 
-    #mode: ActiveMode = $state<ActiveMode>("oll")
-    get mode() { return this.#mode; }
+    #mode: ActiveMode = $state<ActiveMode>('oll')
+    get mode() {
+        return this.#mode
+    }
     set mode(value: ActiveMode) {
         if (value === 'pll' && this.mode !== 'pll') {
-            this.#savedFlips = this.state.map((p) => p.flipIndex);
-            this.setAllPieces(1);
+            this.#savedFlips = this.state.map((p) => p.flipIndex)
+            this.setAllPieces(1)
         } else if (value === 'oll' && this.#savedFlips) {
-            this.state.forEach((p, i) => (p.flipIndex = this.#savedFlips![i]));
-            this.#savedFlips = null;
+            this.state.forEach((p, i) => (p.flipIndex = this.#savedFlips![i]))
+            this.#savedFlips = null
         }
-        this.#mode = value;
+        this.#mode = value
+        // reset pending arrows
+        this.pendingFrom = null
     }
+    #savedFlips: number[] | null = null
 
-    #savedFlips: number[] | null = null;
-
+    arrows = $state<Arrow[]>([])
+    pendingFrom = $state<number | null>(null)
 
     constructor(mode: ActiveMode) {
         this.state = [
@@ -108,7 +115,7 @@ export class RubiksCube {
             new Piece('corner'),
         ]
 
-        this.mode = mode;
+        this.mode = mode
         // $inspect(this.state);
         // $inspect(this.rotation);
     }
@@ -122,10 +129,26 @@ export class RubiksCube {
         for (let s = 0; s < this.steps; s++) [r, c] = [2 - c, r] // undo one CW turn
         return r * 3 + c
     }
+    /** inverse of sourceIndex: where does source piece i appear on screen? */
+    private displayIndex(source: number): number {
+        let r = Math.floor(source / 3),
+            c = source % 3
+        for (let s = 0; s < this.steps; s++) [r, c] = [c, 2 - r] // one CW turn
+        return r * 3 + c
+    }
+    get displayArrows() {
+        return this.arrows.map((a) => ({
+            from: this.displayIndex(a.from),
+            to: this.displayIndex(a.to),
+        }))
+    }
+    isPending(displayIndex: number): boolean {
+        return this.pendingFrom === this.sourceIndex(displayIndex)
+    }
+
     private sourceSide(side: SideLocation): SideLocation {
         return SIDES[(SIDES.indexOf(side) - this.steps + 4) % 4]
     }
-
 
     private markerFace(i: number): Face {
         return MARKER_FACES[i][this.state[i].flipIndex]
@@ -152,14 +175,36 @@ export class RubiksCube {
     // Clicks only happen in pll mode
     // oll all pieces should always face top
     clickFront(displayIndex: number) {
-        if (this.mode === "pll") {
+        const i = this.sourceIndex(displayIndex)
+        if (this.mode === 'oll') this.pointPiece(i, 'front')
+        else this.clickPll(i)
+    }
+    private clickPll(i: number) {
+        if (this.pendingFrom === null) {
+            this.pendingFrom = i
             return
         }
-        this.pointPiece(this.sourceIndex(displayIndex), 'front')
+
+        const from = this.pendingFrom
+        this.pendingFrom = null
+        // same piece -> cancel
+        if (from === i) return
+
+        const existing = this.arrows.findIndex(
+            (a) => a.from === from && a.to === i
+        )
+        // same arrow again: remove it
+        if (existing >= 0) this.arrows.splice(existing, 1)
+        else this.arrows.push({ from, to: i })
+    }
+
+    clearArrows() {
+        this.arrows = []
+        this.pendingFrom = null
     }
 
     clickSide(side: SideLocation, pos: number) {
-        if (this.mode === "pll") {
+        if (this.mode === 'pll') {
             return
         }
         const i = this.sourceIndex(SIDE_INDICES[side][pos])
