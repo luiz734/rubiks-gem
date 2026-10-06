@@ -21,8 +21,8 @@
                     tabindex="0"
                     class="cursor-pointer focus:outline-none"
                     aria-label="grid-{i}"
-                    onclick={() => rubiksCube.toggleFace(i)}
-                    onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && rubiksCube.toggleFace(i)}
+                    onclick={() => rubiksCube.clickFront(i)}
+                    onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && rubiksCube.clickFront(i)}
             >
                 <rect
                         x={RubiksConstants.GridOffset + (i % 3) * RubiksConstants.FaceSize}
