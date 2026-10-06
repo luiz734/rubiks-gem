@@ -273,4 +273,9 @@ export class RubiksCube {
     allPiecesFilled(): boolean {
         return this.allEdgesFilled() && this.allCornersFilled()
     }
+    ollMode(): boolean {
+        return this.mode === 'oll';
+    }
+
+    get pllMode() { return this.#mode === 'pll'; }
 }
