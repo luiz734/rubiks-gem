@@ -20,6 +20,8 @@
 </script>
 
 <div class="flex flex-row p-8" id="app">
-    <RubikFace rubiksCube={rubiksCube}/>
+    <div class="card card-border p-8">
+        <RubikFace rubiksCube={rubiksCube}/>
+    </div>
     <FacesButtons rubiksCube={rubiksCube}/>
 </div>

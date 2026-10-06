@@ -22,7 +22,7 @@
             onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && face.toggleValue(i)}
     >
         <polygon
-                points={RubiksConstants.getTabPoints('top', i)}
+                points={RubiksConstants.getTabPoints(face.side, i)}
                 fill={RubiksConstants.getColor(val)}
                 stroke={RubiksConstants.FaceStrokeColor}
                 stroke-width={RubiksConstants.FaceStrokeWidth}

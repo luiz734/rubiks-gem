@@ -40,5 +40,8 @@
         {/each}
 
                 <AdjacentFace face={rubiksCube.adjacentTop} />
+                <AdjacentFace face={rubiksCube.adjacentRight} />
+                <AdjacentFace face={rubiksCube.adjacentBottom} />
+                <AdjacentFace face={rubiksCube.adjacentLeft} />
     </svg>
 </div>
