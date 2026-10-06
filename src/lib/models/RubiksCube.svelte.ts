@@ -80,9 +80,17 @@ export class RubiksCube {
     #mode: ActiveMode = $state<ActiveMode>("oll")
     get mode() { return this.#mode; }
     set mode(value: ActiveMode) {
+        if (value === 'pll' && this.mode !== 'pll') {
+            this.#savedFlips = this.state.map((p) => p.flipIndex);
+            this.setAllPieces(1);
+        } else if (value === 'oll' && this.#savedFlips) {
+            this.state.forEach((p, i) => (p.flipIndex = this.#savedFlips![i]));
+            this.#savedFlips = null;
+        }
         this.#mode = value;
-        if (value === 'pll') this.setAllPieces(1);
     }
+
+    #savedFlips: number[] | null = null;
 
 
     constructor(mode: ActiveMode) {
