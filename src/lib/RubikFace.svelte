@@ -21,10 +21,7 @@
                     tabindex="0"
                     class="cursor-pointer focus:outline-none"
                     aria-label="grid-{i}"
-                    onclick={() => {
-                        rubiksCube.toggleFace(i);
-                        rubiksCube = rubiksCube;
-                    }}
+                    onclick={() => rubiksCube.toggleFace(i)}
                     onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && rubiksCube.toggleFace(i)}
             >
                 <rect

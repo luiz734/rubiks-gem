@@ -41,20 +41,21 @@ export class Piece {
     }
 }
 
-const CORNER_SIDES: Partial<Record<number, [SideLocation, SideLocation]>> = {
-    // [side at flipIndex 1, side at flipIndex 2]
-    0: ['left', 'top'],
-    2: ['top', 'right'],
-    6: ['bottom', 'left'],
-    8: ['right', 'bottom'],
-};
+type Face = 'front' | SideLocation;
 
-const EDGE_SIDE: Partial<Record<number, SideLocation>> = {
-    1: 'top', 3: 'left', 5: 'right', 7: 'bottom',
-};
+// MARKER_FACES[pieceIndex][flipIndex] = face marker is
+const MARKER_FACES: Face[][] = [
+    ['front', 'left',  'top'],     // 0 corner
+    ['front', 'top'],              // 1 edge
+    ['front', 'top',   'right'],   // 2 corner
+    ['front', 'left'],             // 3 edge
+    ['front'],                     // 4 center
+    ['front', 'right'],            // 5 edge
+    ['front', 'bottom', 'left'],   // 6 corner
+    ['front', 'bottom'],           // 7 edge
+    ['front', 'right', 'bottom'],  // 8 corner
+];
 
-// piece indices touching each side, in reading order
-// (top/bottom: left→right, left/right: top→bottom)
 const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
     top:    [0, 1, 2],
     right:  [2, 5, 8],
@@ -75,27 +76,30 @@ export class RubiksCube {
         ]
     }
 
-    /** Where the marked sticker of piece `i` currently is. */
-    private markerSide(i: number): 'front' | SideLocation | null {
-        const p = this.state[i];
-        if (p.flipIndex === 0) return 'front';
-
-        if (p.type === 'edge') return EDGE_SIDE[i] ?? null;
-        if (p.type === 'corner') return CORNER_SIDES[i]?.[p.flipIndex - 1] ?? null;
-        return null; // center
+    private markerFace(i: number): Face {
+        return MARKER_FACES[i][this.state[i].flipIndex];
     }
 
     getFrontState(): FacetValue[] {
-        return this.state.map((p) => (p.isFacingUp() ? 1 : 0));
+        return this.state.map((_, i) => (this.markerFace(i) === 'front' ? 1 : 0));
     }
 
     getSideState(which: SideLocation): FacetValue[] {
-        return SIDE_INDICES[which].map((i) => (this.markerSide(i) === which ? 1 : 0));
+        return SIDE_INDICES[which].map((i) => (this.markerFace(i) === which ? 1 : 0));
+    }
+
+  private pointPiece(i: number, face: Face) {
+        const idx = MARKER_FACES[i].indexOf(face);
+        if (idx !== -1) this.state[i].flipIndex = idx;
+    }
+
+  clickSide(side: SideLocation, pos: number) {
+        const i = SIDE_INDICES[side][pos];
+        this.pointPiece(i, side);
     }
 
     public toggleFace(faceIndex: number): void {
-        this.state[faceIndex].rotateCW();
-        console.log($state.snapshot(this.state));
+        this.pointPiece(faceIndex, 'front');
     }
 
     setAllEdges(value: (0|1)) {

@@ -1,16 +1,9 @@
 <script lang="ts">
-
     import {RubiksConstants} from "./models/RubiksConstants";
     import type {RubiksCube, SideLocation} from "./models/RubiksCube.svelte";
 
-    type Props = {
-        rubiksCube: RubiksCube,
-        side: SideLocation
-        // toggleSide: Function,
-    }
-
-    let { rubiksCube, side = $bindable() }: Props = $props();
-
+    type Props = { rubiksCube: RubiksCube; side: SideLocation };
+    let { rubiksCube, side }: Props = $props();   // no $bindable needed
 </script>
 
 {#each rubiksCube.getSideState(side) as val, i}
@@ -18,9 +11,9 @@
             role="button"
             tabindex="0"
             class="cursor-pointer focus:outline-none"
-            aria-label="top-side-{i}"
-            // onclick={() => rubiksCube}
-            // onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && face.toggleValue(i)}
+            aria-label="{side}-side-{i}"
+            onclick={() => rubiksCube.clickSide(side, i)}
+            onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && rubiksCube.clickSide(side, i)}
     >
         <polygon
                 points={RubiksConstants.getTabPoints(side, i)}
