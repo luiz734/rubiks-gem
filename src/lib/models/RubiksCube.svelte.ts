@@ -71,6 +71,12 @@ export type RotationAngle = 0 | 90 | 180 | 270
 export type ActiveMode = 'oll' | 'pll'
 
 export type Arrow = { from: number; to: number }
+export type ArrowStyle = {
+    color: string;
+    headColor: string;
+    width: number;
+    offset: number;      // px trimmed from each end, measured from the piece centers
+};
 
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
@@ -99,6 +105,12 @@ export class RubiksCube {
 
     arrows = $state<Arrow[]>([])
     pendingFrom = $state<number | null>(null)
+    arrowStyle = $state<ArrowStyle>({
+        color: '#001AFF',
+        headColor: '#001AFF',
+        width: 12,
+        offset: 10,
+    });
 
     constructor(mode: ActiveMode) {
         this.state = [
@@ -116,7 +128,7 @@ export class RubiksCube {
         ]
 
         this.mode = mode
-        // $inspect(this.state);
+        $inspect(this.arrows);
         // $inspect(this.rotation);
     }
 
