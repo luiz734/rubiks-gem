@@ -5,6 +5,7 @@
     import RotationSlider from "./lib/RotationSlider.svelte";
     import ActiveModeToggle from "./lib/ActiveModeToggle.svelte";
     import OptionsGroup from "./lib/OptionsGroup.svelte";
+    import ArrowsList from "./lib/ArrowsList.svelte";
 
 
     let rubiksCube = $state(
@@ -31,6 +32,11 @@
 
         <OptionsGroup description="Rotate the current state." title="Rotation">
             <RotationSlider rubiksCube={rubiksCube}/>
+        </OptionsGroup>
+
+
+        <OptionsGroup description="Add or remove lists in PLL mode." title="Arrows">
+            <ArrowsList rubiksCube={rubiksCube}/>
         </OptionsGroup>
     </div>
 
