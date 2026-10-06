@@ -11,7 +11,7 @@
 
 </script>
 
-<div class="">
+<div class="bg-base-content p-4">
     <svg height={RubiksConstants.ViewportSize}
          viewBox="0 0 {RubiksConstants.ViewportSize} {RubiksConstants.ViewportSize}"
          width={RubiksConstants.ViewportSize}>

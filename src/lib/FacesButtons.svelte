@@ -22,8 +22,8 @@
     }
 </script>
 
-<div class="flex flex-col">
-    <button class="btn" onclick={onFillEdgesPressed}> Fill Edges </button>
-    <button class="btn" onclick={onFillCornersPressed}> Fill Corners </button>
-    <button class="btn" onclick={onFillPiecesPressed}> Fill All </button>
+<div class="flex flex-col gap-y-2">
+    <button class="btn btn-soft" onclick={onFillEdgesPressed}> Fill Edges </button>
+    <button class="btn btn-soft" onclick={onFillCornersPressed}> Fill Corners </button>
+    <button class="btn btn-soft" onclick={onFillPiecesPressed}> Fill All </button>
 </div>

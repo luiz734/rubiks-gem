@@ -9,11 +9,11 @@
 
 </script>
 
-<div class="w-100">
-    <div class="join">
-        <input aria-label="oll" bind:group={rubiksCube.mode} class="join-item btn" name="options" type="radio"
+<div class="w-full">
+    <div class="join w-full">
+        <input aria-label="oll" bind:group={rubiksCube.mode} class="join-item btn flex-1 disabled:btn-soft!" name="options" type="radio"
                value="oll"/>
-        <input aria-label="pll" bind:group={rubiksCube.mode} class="join-item btn" name="options" type="radio"
+        <input aria-label="pll" bind:group={rubiksCube.mode} class="join-item btn flex-1" name="options" type="radio"
                value="pll"/>
     </div>
 </div>
