@@ -21,7 +21,7 @@
 
 </script>
 
-<div class="w-60 flex flex-col gap-4">
+<div class="max-w-xs flex flex-col gap-4">
     <div class="w-full max-w-xs">
         <div class="flex justify-between px-2.5 mt-2 text-sm">
             <span>0</span>

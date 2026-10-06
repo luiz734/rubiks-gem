@@ -16,6 +16,17 @@
     const span = 3 * K.FaceSize;
     const viewBox = `${K.GridOffset} ${K.GridOffset} ${span} ${span}`;
 
+    let scroller: HTMLDivElement | undefined = $state();
+    let prevCount = 0;
+
+    $effect(() => {
+        const count = rubiksCube.arrowGroups.length;   // the only dependency
+        if (count > prevCount) {
+            scroller?.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
+        }
+        prevCount = count;
+    });
+
     function icon(from: number, to: number, double: boolean) {
         const s = rubiksCube.arrowStyle;
         const pairs = double ? [[from, to], [to, from]] : [[from, to]];
@@ -31,12 +42,11 @@
         // } else {
         //     return isActive ? 'fill-secondary/40' : 'fill-base-100'
         // }
-
     }
 </script>
 
-<div class="flex flex-col gap-y-1">
-    <div class="flex flex-col gap-y-4 overflow-y-auto h-50">
+<div class="flex flex-col gap-y-1 flex-1 justify-between min-h-0 min-w-md">
+    <div bind:this={scroller} class="flex flex-col gap-y-4 overflow-y-auto flex-1">
         {#each rubiksCube.arrowGroups as g (g.srcFrom + '-' + g.srcTo)}
             {@const double = g.kind === 'double'}
             {@const parts = icon(g.from, g.to, double)}
