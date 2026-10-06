@@ -36,10 +36,12 @@
             </g>
         {/each}
 
-                <AdjacentFace rubiksCube={rubiksCube} side="top" />
-                <AdjacentFace rubiksCube={rubiksCube} side="right" />
-                <AdjacentFace rubiksCube={rubiksCube} side="bottom" />
-                <AdjacentFace rubiksCube={rubiksCube} side="left" />
+        {#if rubiksCube.mode === "oll"}
+            <AdjacentFace rubiksCube={rubiksCube} side="top"/>
+            <AdjacentFace rubiksCube={rubiksCube} side="right"/>
+            <AdjacentFace rubiksCube={rubiksCube} side="bottom"/>
+            <AdjacentFace rubiksCube={rubiksCube} side="left"/>
+        {/if}
 
     </svg>
 </div>

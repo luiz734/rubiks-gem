@@ -68,6 +68,7 @@ const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
 
 const SIDES: SideLocation[] = ['top', 'right', 'bottom', 'left']
 export type RotationAngle = 0 | 90 | 180 | 270
+export type ActiveMode = "oll" | "pll";
 
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
@@ -76,7 +77,15 @@ export class RubiksCube {
     state = $state<Piece[]>([])
     rotation: RotationAngle = $state<RotationAngle>(0)
 
-    constructor() {
+    #mode: ActiveMode = $state<ActiveMode>("oll")
+    get mode() { return this.#mode; }
+    set mode(value: ActiveMode) {
+        this.#mode = value;
+        if (value === 'pll') this.setAllPieces(1);
+    }
+
+
+    constructor(mode: ActiveMode) {
         this.state = [
             new Piece('corner'),
             new Piece('edge'),
@@ -90,6 +99,10 @@ export class RubiksCube {
             new Piece('edge'),
             new Piece('corner'),
         ]
+
+        this.mode = mode;
+        // $inspect(this.state);
+        // $inspect(this.rotation);
     }
 
     private get steps() {
@@ -128,11 +141,19 @@ export class RubiksCube {
         )
     }
 
+    // Clicks only happen in pll mode
+    // oll all pieces should always face top
     clickFront(displayIndex: number) {
+        if (this.mode === "pll") {
+            return
+        }
         this.pointPiece(this.sourceIndex(displayIndex), 'front')
     }
 
     clickSide(side: SideLocation, pos: number) {
+        if (this.mode === "pll") {
+            return
+        }
         const i = this.sourceIndex(SIDE_INDICES[side][pos])
         this.pointPiece(i, this.sourceSide(side))
     }
