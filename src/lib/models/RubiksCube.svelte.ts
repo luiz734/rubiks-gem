@@ -163,7 +163,6 @@ export class RubiksCube {
         ]
 
         this.mode = mode
-        $inspect(this.arrows)
         // $inspect(this.rotation);
     }
 
