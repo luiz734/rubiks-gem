@@ -45,7 +45,7 @@
     }
 </script>
 
-<div class="flex flex-col gap-y-1 flex-1 justify-between min-h-0 min-w-md">
+<div class="flex flex-col gap-y-1 flex-1 justify-between min-h-0">
     <div bind:this={scroller} class="flex flex-col gap-y-4 overflow-y-auto flex-1">
         {#each rubiksCube.arrowGroups as g (g.srcFrom + '-' + g.srcTo)}
             {@const double = g.kind === 'double'}
@@ -72,9 +72,9 @@
                     <div class="font-bold">{double ? 'Double Arrow' : 'Single Arrow'}</div>
                     <div class="text-base-content/80 text-sm">
                         {#if double}
-                            Between {NAMES[g.from]} and {NAMES[g.to]}
+                            Between {NAMES[g.from]} and {NAMES[g.to]}.
                         {:else}
-                            From {NAMES[g.from]} to {NAMES[g.to]}
+                            From {NAMES[g.from]} to {NAMES[g.to]}.
                         {/if}
                     </div>
                 </div>
