@@ -7,6 +7,7 @@
     import OptionsGroup from "./lib/OptionsGroup.svelte";
     import ArrowsList from "./lib/ArrowsList.svelte";
     import CubeColors from "./lib/CubeColors.svelte";
+    import CubeStrokes from "./lib/CubeStrokes.svelte";
 
 
     let rubiksCube = $state(
@@ -38,6 +39,10 @@
 
             <OptionsGroup description="Change colors of stikers, arrows and more." title="Colors">
                 <CubeColors rubiksCube={rubiksCube}/>
+            </OptionsGroup>
+
+            <OptionsGroup description="Change strokes width." title="Strokes">
+                <CubeStrokes rubiksCube={rubiksCube}/>
             </OptionsGroup>
         </div>
 

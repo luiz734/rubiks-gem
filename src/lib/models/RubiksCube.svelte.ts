@@ -120,6 +120,11 @@ export class RubiksCube {
         offset: 10,
     })
 
+
+    colors = $state({ sticker: "#FFE600", empty: "#1f1f1f", arrow: "#0020FF" });
+
+    strokes = $state({ outer: 4, inner: 4, adjacent: 4 });
+
     constructor(mode: ActiveMode) {
         this.state = [
             new Piece('corner'),
