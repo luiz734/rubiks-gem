@@ -6,7 +6,7 @@
     import ActiveModeToggle from "./lib/ActiveModeToggle.svelte";
     import OptionsGroup from "./lib/OptionsGroup.svelte";
     import ArrowsList from "./lib/ArrowsList.svelte";
-    import Appearence from "./lib/Appearence.svelte";
+    import CubeColors from "./lib/CubeColors.svelte";
 
 
     let rubiksCube = $state(
@@ -36,8 +36,8 @@
                 <RotationSlider rubiksCube={rubiksCube}/>
             </OptionsGroup>
 
-            <OptionsGroup description="Change colors, strokes and more." title="Appearance">
-                <Appearence rubiksCube={rubiksCube}/>
+            <OptionsGroup description="Change colors of stikers, arrows and more." title="Colors">
+                <CubeColors rubiksCube={rubiksCube}/>
             </OptionsGroup>
         </div>
 
