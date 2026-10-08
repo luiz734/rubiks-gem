@@ -24,28 +24,30 @@
     }
 </script>
 
-<fieldset class="flex flex-col flex-1">
-    <legend class="fieldset-legend text-sm">{label}</legend>
+<fieldset class="flex flex-row flex-1 p-4 content-center">
 
-    <div class="flex flex-1 flex-row  gap-x-8">
-        <label class="btn flex-1 justify-between relative cursor-pointer max-w-60"
-               style:background-color={color}
-               style:color={getContrastColor(color)}>
-            <span>{color}</span>
-            <input
-                    bind:value={color}
-                    class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                    type="color"
-            />
-        </label>
-        <div class=" flex-1 text-right max-w-32">
-            {#if defaultValue !== color}
-                <button onclick={onClickReset}
-                        class="btn btn-link underline text-base-content/20">
-                    reset default
-                </button>
-            {/if}
-        </div>
+    <div class="fieldset-legend text-sm flex-1">{label}</div>
 
+    <div class="flex-0 max-w-32 h-8">
+        {#if defaultValue !== color}
+            <button onclick={onClickReset}
+                    class="btn btn-link  text-base-content/20">
+                <RotateCcw class="-m-t-2" size={16} />
+<!--                reset-->
+            </button>
+        {/if}
     </div>
+
+    <label class="btn flex-1 relative cursor-pointer max-w-30 w-10 h-8"
+           style:background-color={color}
+           style:color={getContrastColor(color)}>
+        <span>{color}</span>
+        <input
+                bind:value={color}
+                class="absolute inset-0 cursor-pointer opacity-0"
+                type="color"
+        />
+    </label>
+
+
 </fieldset>
