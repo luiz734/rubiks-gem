@@ -5,19 +5,16 @@ export class RubiksConstants {
     public static readonly TabDepth = 32
     public static readonly Inset = RubiksConstants.FaceSize * 0.1
     public static readonly FaceStrokeColor = '#000'
-    public static readonly FaceStrokeWidth = 4
 
-    public static readonly StrokeOffset = RubiksConstants.FaceStrokeWidth / 2
+    // Room reserved around the drawing so strokes are never clipped.
+    // A stroke is centered on its edge, so it needs half its width: 10 covers a max slider of 20.
+    public static readonly StrokeMargin = 10
     public static readonly GridOffset =
-        RubiksConstants.StrokeOffset + RubiksConstants.TabDepth
+        RubiksConstants.StrokeMargin + RubiksConstants.TabDepth
     public static readonly ViewportSize =
         RubiksConstants.FaceSize * 3 +
         RubiksConstants.TabDepth * 2 +
-        RubiksConstants.FaceStrokeWidth
-
-    public static getColor(val: 0 | 1 | number): string {
-        return val === 1 ? '#FFE600' : '#4A4A4A'
-    }
+        RubiksConstants.StrokeMargin * 2
 
     public static getTabPoints(side: SideLocation, i: number): string {
         const { GridOffset, FaceSize, TabDepth, Inset } = RubiksConstants

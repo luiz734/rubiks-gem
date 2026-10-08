@@ -17,9 +17,9 @@
     >
         <polygon
                 points={RubiksConstants.getTabPoints(side, i)}
-                fill={RubiksConstants.getColor(val)}
+                fill={rubiksCube.getColor(val)}
                 stroke={RubiksConstants.FaceStrokeColor}
-                stroke-width={RubiksConstants.FaceStrokeWidth}
+                stroke-width={rubiksCube.strokes.inner}
         />
     </g>
 {/each}

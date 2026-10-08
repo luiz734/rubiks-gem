@@ -30,9 +30,9 @@
                         y={RubiksConstants.GridOffset + Math.floor(i / 3) * RubiksConstants.FaceSize}
                         width={RubiksConstants.FaceSize}
                         height={RubiksConstants.FaceSize}
-                        fill={RubiksConstants.getColor(val)}
+                        fill={rubiksCube.getColor(val)}
                         stroke={rubiksCube.isPending(i) ? 'orange' : RubiksConstants.FaceStrokeColor}
-                        stroke-width={rubiksCube.isPending(i) ? 4 : RubiksConstants.FaceStrokeWidth}
+                        stroke-width={rubiksCube.isPending(i) ? 4 : rubiksCube.strokes.inner}
                 />
             </g>
         {/each}

@@ -3,6 +3,7 @@
     import {RubiksConstants as K} from "./models/RubiksConstants";
     import type {RubiksCube} from "./models/RubiksCube.svelte";
     import {arrowGeometry, cellCenter} from "./models/arrowGeometry";
+    import { DEFAULT_COLORS } from "./models/RubiksCube.svelte";
 
 
     let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
@@ -60,11 +61,11 @@
                               class={redOrBlue(double, i === g.from || i === g.to)}/>
                     {/each}
                     {#each parts as p}
-                        <line {...p.shaft} stroke={rubiksCube.arrowStyle.color}
+                        <line {...p.shaft} stroke={DEFAULT_COLORS.arrow}
                               stroke-width={rubiksCube.arrowStyle.width}/>
                     {/each}
                     {#each parts as p}
-                        <polygon points={p.head} fill={rubiksCube.arrowStyle.headColor}/>
+                        <polygon points={p.head} fill={DEFAULT_COLORS.arrow}/>
                     {/each}
                 </svg>
 

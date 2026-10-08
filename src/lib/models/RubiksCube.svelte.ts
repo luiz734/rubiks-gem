@@ -86,6 +86,14 @@ export type ArrowGroup = {
     srcTo: number
 }
 
+export const DEFAULT_COLORS = {
+    sticker: '#FFE600',
+    empty: '#4A4A4A',
+    arrow: '#0020FF',
+} as const
+
+export const DEFAULT_STROKES = { outer: 4, inner: 4, adjacent: 4 } as const
+
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
     private static readonly CORNERS = [0, 2, 6, 8]
@@ -114,16 +122,30 @@ export class RubiksCube {
     arrows = $state<Arrow[]>([])
     pendingFrom = $state<number | null>(null)
     arrowStyle = $state<ArrowStyle>({
-        color: '#001AFF',
-        headColor: '#001AFF',
+        color: DEFAULT_COLORS.arrow,
+        headColor: DEFAULT_COLORS.arrow,
         width: 12,
         offset: 10,
     })
 
+    get arrowColor() {
+        return this.arrowStyle.color
+    }
+    set arrowColor(value: string) {
+        this.arrowStyle.color = value
+        this.arrowStyle.headColor = value
+    }
 
-    colors = $state({ sticker: "#FFE600", empty: "#1f1f1f", arrow: "#0020FF" });
+    colors = $state({
+        sticker: DEFAULT_COLORS.sticker as string,
+        empty: DEFAULT_COLORS.empty as string,
+    });
 
-    strokes = $state({ outer: 4, inner: 4, adjacent: 4 });
+    strokes = $state({
+        outer: DEFAULT_STROKES.outer as number,
+        inner: DEFAULT_STROKES.inner as number,
+        adjacent: DEFAULT_STROKES.adjacent as number,
+    });
 
     constructor(mode: ActiveMode) {
         this.state = [
@@ -144,6 +166,11 @@ export class RubiksCube {
         $inspect(this.arrows)
         // $inspect(this.rotation);
     }
+
+    public getColor(val: 0 | 1 | number): string {
+        return val === 1 ? this.colors.sticker : this.colors.empty
+    }
+
 
     private get steps() {
         return this.rotation / 90
