@@ -31,10 +31,28 @@
                         width={RubiksConstants.FaceSize}
                         height={RubiksConstants.FaceSize}
                         fill={rubiksCube.getColor(val)}
-                        stroke={rubiksCube.isPending(i) ? 'orange' : RubiksConstants.FaceStrokeColor}
-                        stroke-width={rubiksCube.isPending(i) ? 4 : rubiksCube.strokes.inner}
+                        stroke={rubiksCube.isPending(i) ? 'orange' : 'none'}
+                        stroke-width={rubiksCube.isPending(i) ? 4 : 0}
                 />
             </g>
+
+            <!--            internal lines-->
+            {#each [1, 2] as n}
+                <line x1={RubiksConstants.GridOffset + n * RubiksConstants.FaceSize}
+                      y1={RubiksConstants.GridOffset}
+                      x2={RubiksConstants.GridOffset + n * RubiksConstants.FaceSize}
+                      y2={RubiksConstants.GridOffset + 3 * RubiksConstants.FaceSize}
+                      stroke={RubiksConstants.FaceStrokeColor}
+                      stroke-width={rubiksCube.strokes.inner}
+                      pointer-events="none"/>
+                <line x1={RubiksConstants.GridOffset}
+                      y1={RubiksConstants.GridOffset + n * RubiksConstants.FaceSize}
+                      x2={RubiksConstants.GridOffset + 3 * RubiksConstants.FaceSize}
+                      y2={RubiksConstants.GridOffset + n * RubiksConstants.FaceSize}
+                      stroke={RubiksConstants.FaceStrokeColor}
+                      stroke-width={rubiksCube.strokes.inner}
+                      pointer-events="none"/>
+            {/each}
         {/each}
 
         {#if rubiksCube.mode === 'pll'}
@@ -47,6 +65,15 @@
             <AdjacentFace rubiksCube={rubiksCube} side="bottom"/>
             <AdjacentFace rubiksCube={rubiksCube} side="left"/>
         {/if}
+
+        <rect fill="none"
+              height={RubiksConstants.FaceSize * 3}
+              pointer-events="none"
+              stroke={RubiksConstants.FaceStrokeColor}
+              stroke-width={rubiksCube.strokes.outer}
+              width={RubiksConstants.FaceSize * 3}
+              x={RubiksConstants.GridOffset}
+              y={RubiksConstants.GridOffset}/>
 
     </svg>
 </div>

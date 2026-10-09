@@ -19,7 +19,7 @@
                 points={RubiksConstants.getTabPoints(side, i)}
                 fill={rubiksCube.getColor(val)}
                 stroke={RubiksConstants.FaceStrokeColor}
-                stroke-width={rubiksCube.strokes.inner}
+                stroke-width={rubiksCube.strokes.adjacent}
         />
     </g>
 {/each}
