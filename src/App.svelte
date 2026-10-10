@@ -9,6 +9,7 @@
     import CubeColors from "./lib/CubeColors.svelte";
     import CubeStrokes from "./lib/CubeStrokes.svelte";
     import SaveOptions from "./lib/SaveOptions.svelte";
+    import {ExportSettings} from "./lib/models/ExportSettings.svelte";
 
 
     let rubiksCube = $state(
@@ -30,7 +31,7 @@
                 <RubikFace bind:cubeDiv={cubeDiv} rubiksCube={rubiksCube}/>
             </div>
         </div>
-        <SaveOptions targetDiv={cubeDiv} transparent={rubiksCube.transparentBg} />
+        <SaveOptions targetDiv={cubeDiv} settings={new ExportSettings()}  />
     </div>
 
     <div class="flex flex-row bg-base-300 gap-4 flex-1 min-w-0">

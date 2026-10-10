@@ -3,21 +3,24 @@ import type { SideLocation } from './RubiksCube.svelte.js'
 export class RubiksConstants {
     public static readonly FaceSize = 100
     public static readonly TabDepth = 32
-    public static readonly Inset = RubiksConstants.FaceSize * 0.1
     public static readonly FaceStrokeColor = '#000'
-
-    // Room reserved around the drawing so strokes are never clipped.
-    // A stroke is centered on its edge, so it needs half its width: 10 covers a max slider of 20.
+    public static readonly GridCells = 3
+    public static readonly GridSize =
+        RubiksConstants.FaceSize * RubiksConstants.GridCells
+    public static readonly InsetRatio = 0.1
+    public static readonly Inset =
+        RubiksConstants.FaceSize * RubiksConstants.InsetRatio
     public static readonly StrokeMargin = 10
-    public static readonly GridOffset =
-        RubiksConstants.StrokeMargin + RubiksConstants.TabDepth
     public static readonly ViewportSize =
-        RubiksConstants.FaceSize * 3 +
+        RubiksConstants.GridSize +
         RubiksConstants.TabDepth * 2 +
         RubiksConstants.StrokeMargin * 2
 
+    public static readonly GridOffset =
+        RubiksConstants.StrokeMargin + RubiksConstants.TabDepth
+
     public static getTabPoints(side: SideLocation, i: number): string {
-        const { GridOffset, FaceSize, TabDepth, Inset } = RubiksConstants
+        const { GridOffset, GridSize, FaceSize, TabDepth, Inset } = RubiksConstants
 
         if (side === 'top') {
             const x0 = GridOffset + i * FaceSize
@@ -29,7 +32,7 @@ export class RubiksConstants {
         if (side === 'bottom') {
             const x0 = GridOffset + i * FaceSize
             const x1 = x0 + FaceSize
-            const y1 = GridOffset + FaceSize * 3
+            const y1 = GridOffset + GridSize
             const yBot = y1 + TabDepth
             return `${x0},${y1} ${x1},${y1} ${x1 - Inset},${yBot} ${x0 + Inset},${yBot}`
         }
@@ -43,7 +46,7 @@ export class RubiksConstants {
         if (side === 'right') {
             const y0 = GridOffset + i * FaceSize
             const y1 = y0 + FaceSize
-            const x1 = GridOffset + FaceSize * 3
+            const x1 = GridOffset + GridSize
             const xRight = x1 + TabDepth
             return `${x1},${y0} ${x1},${y1} ${xRight},${y1 - Inset} ${xRight},${y0 + Inset}`
         }
