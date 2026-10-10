@@ -23,6 +23,7 @@
     "dependencies": {
         "@lucide/svelte": "^1.52.0",
         "@tailwindcss/vite": "^4.3.3",
+        "html-to-image": "^1.11.13",
         "tailwindcss": "^4.3.3"
     }
 }

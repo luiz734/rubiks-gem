@@ -7,12 +7,13 @@
 
     type Props = {
         rubiksCube: RubiksCube
+        cubeDiv: HTMLElement | undefined
     }
-    let {rubiksCube = $bindable()}: Props = $props();
+    let {rubiksCube = $bindable(), cubeDiv=$bindable()}: Props = $props();
 
 </script>
 
-<div class="bg-base-content p-4">
+<div bind:this={cubeDiv} class="bg-base-content p-4">
     <svg height={RubiksConstants.ViewportSize}
          viewBox="0 0 {RubiksConstants.ViewportSize} {RubiksConstants.ViewportSize}"
          width={RubiksConstants.ViewportSize}>

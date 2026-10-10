@@ -5,10 +5,6 @@
 
     let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
 
-    const defaultArrowColor = "#0020FF";
-
-    let transparentBg = $state(false);
-
 </script>
 
 <div class="flex flex-col gap-4">
@@ -21,7 +17,7 @@
 
 
     <label>
-        <input bind:checked={transparentBg} class="checkbox" type="checkbox"/>
+        <input bind:checked={rubiksCube.transparentBg} class="checkbox" type="checkbox"/>
         Transparent Background
     </label>
 </div>

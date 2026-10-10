@@ -147,6 +147,8 @@ export class RubiksCube {
         adjacent: DEFAULT_STROKES.adjacent as number,
     });
 
+    transparentBg: boolean = $state(false);
+
     constructor(mode: ActiveMode) {
         this.state = [
             new Piece('corner'),

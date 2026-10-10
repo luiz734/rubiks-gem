@@ -8,26 +8,32 @@
     import ArrowsList from "./lib/ArrowsList.svelte";
     import CubeColors from "./lib/CubeColors.svelte";
     import CubeStrokes from "./lib/CubeStrokes.svelte";
+    import SaveOptions from "./lib/SaveOptions.svelte";
 
 
     let rubiksCube = $state(
         new RubiksCube("oll")
     );
 
+    let cubeDiv: HTMLDivElement | undefined = $state()
+
     $inspect(rubiksCube);
 
 </script>
 
-<div class="flex flex-row bg-base-200 w-screen h-screen gap-0">
+<div class="flex flex-row bg-base-300 w-screen h-screen gap-4 p-4">
 
-    <div class="flex flex-col p-4">
-        <ActiveModeToggle rubiksCube={rubiksCube}/>
-        <div class="card card-border p-8">
-            <RubikFace rubiksCube={rubiksCube}/>
+    <div class="flex flex-col p-4 justify-between rounded-2xl border border-base-100 bg-base-200">
+        <div class="flex flex-col">
+            <ActiveModeToggle rubiksCube={rubiksCube}/>
+            <div class="card card-border p-8">
+                <RubikFace bind:cubeDiv={cubeDiv} rubiksCube={rubiksCube}/>
+            </div>
         </div>
+        <SaveOptions targetDiv={cubeDiv} transparent={rubiksCube.transparentBg} />
     </div>
 
-    <div class="flex flex-row p-4 bg-base-300 gap-4 flex-1 min-w-0">
+    <div class="flex flex-row bg-base-300 gap-4 flex-1 min-w-0">
         <div class="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] flex-2 min-w-0 gap-4 content-start overflow-auto">
             <OptionsGroup description="Control multiple faces at the same time." title="Faces">
                 <FacesButtons rubiksCube={rubiksCube}/>
