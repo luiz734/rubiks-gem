@@ -1,6 +1,7 @@
 <script lang="ts">
     import {RotateCcw} from "@lucide/svelte"
 
+    // Color picker UI input
 
     type Props = {
         color: string;

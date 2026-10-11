@@ -1,6 +1,8 @@
 <script lang="ts">
-    import type {RubiksCube} from "./models/RubiksCube.svelte";
-    import StrokePicker from "./StrokePicker.svelte";
+    import type {RubiksCube} from "./models/rubiksCube.svelte.js";
+    import SliderPicker from "./SliderPicker.svelte";
+
+    // Group sliders for strokes
 
     type Props = {
         rubiksCube: RubiksCube;
@@ -15,13 +17,13 @@
 
 <div class="flex flex-col gap-4">
     <div class="flex flex-col flex-1 border rounded-2xl border-base-content/10 divide-y divide-base-content/10 my-4">
-        <StrokePicker bind:width={rubiksCube.strokes.outer}
+        <SliderPicker bind:width={rubiksCube.strokes.outer}
                       defaultValue={defaultOuterStroke}
                       label="Outer Stroke"/>
-        <StrokePicker bind:width={rubiksCube.strokes.inner}
+        <SliderPicker bind:width={rubiksCube.strokes.inner}
                       defaultValue={defaultInnerStroke}
                       label="Inner Stroke"/>
-        <StrokePicker bind:width={rubiksCube.strokes.adjacent}
+        <SliderPicker bind:width={rubiksCube.strokes.adjacent}
                       defaultValue={defaultAdjacentStroke}
                       label="Adjacent Stroke"/>
     </div>

@@ -1,6 +1,8 @@
 <script lang="ts">
-    import {RubiksConstants} from "./models/RubiksConstants";
-    import type {RubiksCube, SideLocation} from "./models/RubiksCube.svelte";
+    import {RubiksConstants} from "./models/rubiksConstants";
+    import type {RubiksCube, SideLocation} from "./models/rubiksCube.svelte.js";
+
+    // Faces on the side of the cube
 
     type Props = { rubiksCube: RubiksCube; side: SideLocation };
     let {rubiksCube, side}: Props = $props();   // no $bindable needed

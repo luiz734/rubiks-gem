@@ -1,10 +1,11 @@
 <script lang="ts">
     import {Trash} from "@lucide/svelte";
-    import {RubiksConstants as K} from "./models/RubiksConstants";
-    import type {RubiksCube} from "./models/RubiksCube.svelte";
+    import {RubiksConstants as K} from "./models/rubiksConstants";
+    import type {RubiksCube} from "./models/rubiksCube.svelte.js";
     import {arrowGeometry, cellCenter} from "./models/arrowGeometry";
-    import {DEFAULT_COLORS} from "./models/RubiksCube.svelte";
+    import {DEFAULT_COLORS} from "./models/rubiksCube.svelte.js";
 
+    // Group multiple arrows
 
     let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
 

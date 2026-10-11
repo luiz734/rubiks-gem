@@ -1,6 +1,8 @@
 <script lang="ts">
-    import type {ExportSettings} from "./models/ExportSettings.svelte";
+    import type {ExportSettings} from "./models/exportSettings.svelte.js";
     import {EXPORT_MAX_SIZE, EXPORT_MIN_SIZE, renderExport} from "./models/export";
+
+    // Temporary: export/save options
 
     type Props = {
         targetDiv: HTMLElement | undefined

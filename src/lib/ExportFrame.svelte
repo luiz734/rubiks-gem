@@ -1,7 +1,9 @@
 <script lang="ts">
     import type {Snippet} from "svelte";
     import {computeLayout} from "./models/export";
-    import type {ExportSettings} from "./models/ExportSettings.svelte";
+    import type {ExportSettings} from "./models/exportSettings.svelte.js";
+
+    // Wraps the rubiks cube preview
 
     type Props = {
         settings: ExportSettings
@@ -23,11 +25,11 @@
         'background-size:16px 16px;'
 </script>
 
-<!-- outer: preview only (checkerboard + border), never exported -->
+<!--checkboard -->
 <div class="w-100 aspect-square border border-base-content/10"
      style={settings.transparent ? checkerboard : ''}>
 
-    <!-- inner: this is exactly what gets exported -->
+<!--    exported content-->
     <div bind:clientWidth={width}
          bind:this={frame}
          class="relative w-full h-full"

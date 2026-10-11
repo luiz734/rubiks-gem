@@ -1,7 +1,8 @@
 <script lang="ts">
+    import {RubiksCube} from "./models/rubiksCube.svelte.js";
+    import {RubiksConstants} from "./models/rubiksConstants";
 
-    import {RubiksCube} from "./models/RubiksCube.svelte";
-    import {RubiksConstants} from "./models/RubiksConstants";
+    // Shortcuts to change multiple faces (e.g. fill edges)
 
     type Props = {
         rubiksCube: RubiksCube

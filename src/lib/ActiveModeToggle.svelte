@@ -1,6 +1,8 @@
 <script lang="ts">
 
-    import type {RubiksCube} from "./models/RubiksCube.svelte";
+    // Allows player to switch between 'oll' and 'pll' mode
+
+    import type {RubiksCube} from "./models/rubiksCube.svelte.js";
 
     type Props = {
         rubiksCube: RubiksCube

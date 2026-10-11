@@ -1,23 +1,13 @@
 <script lang="ts">
     import {RotateCcw, RotateCw} from "@lucide/svelte"
-    import {type RotationAngle, RubiksCube} from "./models/RubiksCube.svelte";
+    import {type RotationAngle, RubiksCube} from "./models/rubiksCube.svelte.js";
+
+    // Group rotation options
 
     type Props = {
         rubiksCube: RubiksCube
     }
     let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
-
-    function rotateCw(): void {
-        rubiksCube.rotation = Math.min(270, rubiksCube.rotation + 90) as RotationAngle;
-    }
-
-    function rotateCcw(): void {
-        rubiksCube.rotation = Math.max(0, rubiksCube.rotation - 90) as RotationAngle;
-    }
-
-    function reset(): void {
-        rubiksCube.rotation = 0;
-    }
 
 </script>
 

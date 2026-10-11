@@ -1,6 +1,8 @@
 <script lang="ts">
-    import type {RubiksCube} from "./models/RubiksCube.svelte";
+    import type {RubiksCube} from "./models/rubiksCube.svelte.js";
     import {arrowGeometry, cellCenter} from "./models/arrowGeometry";
+
+    // Draws an arrow
 
     let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
 

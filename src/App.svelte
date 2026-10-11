@@ -1,7 +1,7 @@
 <script lang="ts">
     import RubikFace from "./lib/RubikFace.svelte";
     import FacesButtons from "./lib/FacesButtons.svelte";
-    import {RubiksCube} from "./lib/models/RubiksCube.svelte";
+    import {RubiksCube} from "./lib/models/rubiksCube.svelte.js";
     import RotationSlider from "./lib/RotationSlider.svelte";
     import ActiveModeToggle from "./lib/ActiveModeToggle.svelte";
     import OptionsGroup from "./lib/OptionsGroup.svelte";
@@ -9,7 +9,7 @@
     import CubeColors from "./lib/CubeColors.svelte";
     import CubeStrokes from "./lib/CubeStrokes.svelte";
     import SaveOptions from "./lib/SaveOptions.svelte";
-    import {ExportSettings} from "./lib/models/ExportSettings.svelte";
+    import {ExportSettings} from "./lib/models/exportSettings.svelte.js";
     import ExportFrame from "./lib/ExportFrame.svelte";
 
 

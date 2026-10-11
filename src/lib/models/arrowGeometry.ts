@@ -1,4 +1,4 @@
-import { RubiksConstants as K } from './RubiksConstants'
+import { RubiksConstants as K } from './rubiksConstants'
 
 export type Point = { x: number; y: number };
 

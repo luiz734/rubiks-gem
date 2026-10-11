@@ -1,5 +1,7 @@
 <script lang="ts">
 
+    // Container to wrap UI "cards"
+
     interface Props {
         children: any,
         title: string,

@@ -1,7 +1,9 @@
 <script lang="ts">
-    import type {RubiksCube} from "./models/RubiksCube.svelte";
-    import {DEFAULT_COLORS} from "./models/RubiksCube.svelte";
+    import type {RubiksCube} from "./models/rubiksCube.svelte.js";
+    import {DEFAULT_COLORS} from "./models/rubiksCube.svelte.js";
     import ColorPicker from "./ColorPicker.svelte";
+
+    // Group color pickers for the cube
 
     let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
 

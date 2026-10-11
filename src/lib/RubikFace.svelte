@@ -1,9 +1,11 @@
 <script lang="ts">
-
-    import {RubiksConstants} from "./models/RubiksConstants";
+    import {RubiksConstants} from "./models/rubiksConstants";
     import AdjacentFace from "./AdjacentFace.svelte";
-    import {RubiksCube} from "./models/RubiksCube.svelte";
+    import {RubiksCube} from "./models/rubiksCube.svelte.js";
     import Arrows from "./Arrows.svelte";
+
+    // Draw all the faces, frontal and adjacent
+    // Each frontal face DOESN'T have a separated component
 
     type Props = {
         rubiksCube: RubiksCube
