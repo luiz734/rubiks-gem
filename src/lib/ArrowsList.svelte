@@ -42,8 +42,8 @@
     }
 </script>
 
-<div class="flex flex-col gap-y-1 flex-1 justify-between min-h-0">
-    <div bind:this={scroller} class="flex flex-col gap-y-4 overflow-y-auto flex-1">
+<div class="flex flex-col gap-y-1 flex-1 min-h-0">
+    <div bind:this={scroller} class="flex flex-col gap-y-4 overflow-y-auto flex-1 min-h-0">
         {#each rubiksCube.arrowGroups as g (g.srcFrom + '-' + g.srcTo)}
             {@const double = g.kind === 'double'}
             {@const parts = icon(g.from, g.to, double)}
@@ -85,5 +85,5 @@
             <div class="text-base-content/60 p-2">No arrows yet. Click two pieces to add one.</div>
         {/each}
     </div>
-    <button class="btn btn-error mt-6" onclick={() => {rubiksCube.removeAllArrows() }}> Remove All</button>
+    <button class="btn btn-error mt-6 shrink-0" onclick={() => {rubiksCube.removeAllArrows() }}> Remove All</button>
 </div>
