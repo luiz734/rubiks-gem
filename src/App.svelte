@@ -10,15 +10,19 @@
     import CubeStrokes from "./lib/CubeStrokes.svelte";
     import SaveOptions from "./lib/SaveOptions.svelte";
     import {ExportSettings} from "./lib/models/ExportSettings.svelte";
+    import ExportFrame from "./lib/ExportFrame.svelte";
 
 
     let rubiksCube = $state(
         new RubiksCube("oll")
     );
 
-    let cubeDiv: HTMLDivElement | undefined = $state()
+    // let cubeDiv: HTMLDivElement | undefined = $state()
 
     $inspect(rubiksCube);
+
+    let settings = new ExportSettings();
+    let frame = $state<HTMLElement | undefined>();
 
 </script>
 
@@ -27,11 +31,15 @@
     <div class="flex flex-col p-4 justify-between rounded-2xl border border-base-100 bg-base-200">
         <div class="flex flex-col">
             <ActiveModeToggle rubiksCube={rubiksCube}/>
-            <div class="card card-border p-8">
-                <RubikFace bind:cubeDiv={cubeDiv} rubiksCube={rubiksCube}/>
-            </div>
+
+            <ExportFrame {settings} bind:frame>
+                <RubikFace {rubiksCube}/>
+            </ExportFrame>
+<!--            <div class="card card-border p-8">-->
+<!--                <RubikFace bind:cubeDiv={cubeDiv} rubiksCube={rubiksCube}/>-->
+<!--            </div>-->
         </div>
-        <SaveOptions targetDiv={cubeDiv} settings={new ExportSettings()}  />
+        <SaveOptions targetDiv={frame} {settings}  />
     </div>
 
     <div class="flex flex-row bg-base-300 gap-4 flex-1 min-w-0">

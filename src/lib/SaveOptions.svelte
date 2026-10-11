@@ -13,13 +13,7 @@
         if (!targetDiv) return
 
         try {
-            const blob = await renderExport(targetDiv, {
-                size: settings.effectiveSize,
-                subtitle: settings.subtitle,
-                position: settings.position,
-                transparent: settings.transparent,
-                textColor: settings.textColor,
-            })
+            const blob = await renderExport(targetDiv, settings.size)
             if (!blob) return
 
             const url = URL.createObjectURL(blob)

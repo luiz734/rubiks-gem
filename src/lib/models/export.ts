@@ -49,43 +49,10 @@ export type RenderOptions = {
     textColor: string
 }
 
-export async function renderExport(el: HTMLElement, o: RenderOptions): Promise<Blob | null> {
-    const layout = computeLayout(o.size, o.subtitle, o.position)
-    const background = getComputedStyle(el).backgroundColor
-
-    const cubeBlob = await toBlob(el, {
-        pixelRatio: layout.cubeSide / el.offsetWidth,
-        style: o.transparent ? {background: 'transparent'} : {},
+export function renderExport(frame: HTMLElement, size: number): Promise<Blob | null> {
+    return toBlob(frame, {
+        pixelRatio: 1,
+        canvasWidth: size,
+        canvasHeight: size,
     })
-    if (!cubeBlob) return null
-    const cube = await createImageBitmap(cubeBlob)
-
-    const canvas = document.createElement('canvas')
-    canvas.width = layout.size
-    canvas.height = layout.size
-    const ctx = canvas.getContext('2d')!
-
-    if (!o.transparent) {
-        ctx.fillStyle = background
-        ctx.fillRect(0, 0, layout.size, layout.size)
-    }
-
-    ctx.drawImage(cube, layout.cubeX, layout.cubeY, layout.cubeSide, layout.cubeSide)
-
-    if (layout.bandHeight > 0) {
-        let fontSize = layout.bandHeight * TEXT_RATIO
-        const maxWidth = layout.size * TEXT_MAX_WIDTH_RATIO
-        ctx.font = `${fontSize}px sans-serif`
-        const measured = ctx.measureText(o.subtitle).width
-        if (measured > maxWidth) {
-            fontSize *= maxWidth / measured
-            ctx.font = `${fontSize}px sans-serif`
-        }
-        ctx.fillStyle = o.textColor
-        ctx.textAlign = 'center'
-        ctx.textBaseline = 'middle'
-        ctx.fillText(o.subtitle, layout.size / 2, layout.bandY + layout.bandHeight / 2)
-    }
-
-    return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
 }
