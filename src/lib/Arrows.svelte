@@ -16,9 +16,9 @@
 <g style="pointer-events: none">
     {#each drawn as g}
         <line {...g.shaft} stroke={rubiksCube.arrowStyle.color}
-              stroke-width={rubiksCube.arrowStyle.width} />
+              stroke-width={rubiksCube.arrowStyle.width}/>
     {/each}
     {#each drawn as g}
-        <polygon points={g.head} fill={rubiksCube.arrowStyle.headColor} />
+        <polygon points={g.head} fill={rubiksCube.arrowStyle.headColor}/>
     {/each}
 </g>

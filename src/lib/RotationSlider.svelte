@@ -29,7 +29,7 @@
             <span>180</span>
             <span>270</span>
         </div>
-        <input class="range range-sm" max="270" min="0" step="90" type="range" bind:value={rubiksCube.rotation}/>
+        <input bind:value={rubiksCube.rotation} class="range range-sm" max="270" min="0" step="90" type="range"/>
     </div>
 
     <div class="flex flex-row w-full justify-between">

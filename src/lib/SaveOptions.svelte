@@ -30,16 +30,16 @@
 
 <div class="flex flex-col gap-y-2">
 
-    <select class="select" bind:value={settings.position}>
+    <select bind:value={settings.position} class="select">
         <option value="top">Top</option>
         <option value="bottom">Bottom</option>
     </select>
 
-    <input type="number" min={EXPORT_MIN_SIZE} max={EXPORT_MAX_SIZE} step="1"
-           class="input w-24" bind:value={settings.size} />
+    <input bind:value={settings.size} class="input w-24" max={EXPORT_MAX_SIZE} min={EXPORT_MIN_SIZE}
+           step="1" type="number"/>
 
-    <input type="text" class="input" placeholder="Subtitle (optional)"
-           bind:value={settings.subtitle} />
+    <input bind:value={settings.subtitle} class="input" placeholder="Subtitle (optional)"
+           type="text"/>
 
     <button class="btn btn-success" disabled={!targetDiv} onclick={onClickDownload}> Download</button>
 </div>

@@ -3,7 +3,7 @@
     import type {RubiksCube, SideLocation} from "./models/RubiksCube.svelte";
 
     type Props = { rubiksCube: RubiksCube; side: SideLocation };
-    let { rubiksCube, side }: Props = $props();   // no $bindable needed
+    let {rubiksCube, side}: Props = $props();   // no $bindable needed
 </script>
 
 {#each rubiksCube.getSideState(side) as val, i}

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {Trash, Trash2} from "@lucide/svelte";
+    import {Trash} from "@lucide/svelte";
     import {RubiksConstants as K} from "./models/RubiksConstants";
     import type {RubiksCube} from "./models/RubiksCube.svelte";
     import {arrowGeometry, cellCenter} from "./models/arrowGeometry";
-    import { DEFAULT_COLORS } from "./models/RubiksCube.svelte";
+    import {DEFAULT_COLORS} from "./models/RubiksCube.svelte";
 
 
     let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
@@ -23,7 +23,7 @@
     $effect(() => {
         const count = rubiksCube.arrowGroups.length;   // the only dependency
         if (count > prevCount) {
-            scroller?.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
+            scroller?.scrollTo({top: scroller.scrollHeight, behavior: 'smooth'});
         }
         prevCount = count;
     });
@@ -36,13 +36,8 @@
             .filter((g) => g !== null);
     }
 
-    function redOrBlue(isDouble: boolean, isActive: boolean) {
+    function redOrBlue(isActive: boolean) {
         return isActive ? 'fill-primary/40' : 'fill-base-100'
-        // if (!isDouble) {
-        //     return isActive ? 'fill-primary/40' : 'fill-base-100'
-        // } else {
-        //     return isActive ? 'fill-secondary/40' : 'fill-base-100'
-        // }
     }
 </script>
 
@@ -58,7 +53,7 @@
                               y={K.GridOffset + Math.floor(i / 3) * K.FaceSize}
                               width={K.FaceSize} height={K.FaceSize}
                               stroke="currentColor" stroke-opacity="0.3"
-                              class={redOrBlue(double, i === g.from || i === g.to)}/>
+                              class={redOrBlue(i === g.from || i === g.to)}/>
                     {/each}
                     {#each parts as p}
                         <line {...p.shaft} stroke={DEFAULT_COLORS.arrow}

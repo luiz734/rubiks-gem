@@ -1,6 +1,5 @@
 import { clampSize, type SubtitlePosition } from './export'
 
-
 export class ExportSettings {
     size = $state(512)
     subtitle = $state('')

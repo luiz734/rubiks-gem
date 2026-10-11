@@ -20,7 +20,8 @@ export class RubiksConstants {
         RubiksConstants.StrokeMargin + RubiksConstants.TabDepth
 
     public static getTabPoints(side: SideLocation, i: number): string {
-        const { GridOffset, GridSize, FaceSize, TabDepth, Inset } = RubiksConstants
+        const { GridOffset, GridSize, FaceSize, TabDepth, Inset } =
+            RubiksConstants
 
         if (side === 'top') {
             const x0 = GridOffset + i * FaceSize

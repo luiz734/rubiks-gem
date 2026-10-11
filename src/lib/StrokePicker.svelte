@@ -40,8 +40,8 @@
             aria-label={label}
             bind:value={width}
             class="range range-xs w-32 shrink-0"
-            {min}
             {max}
+            {min}
             step="1"
             type="range"
     />

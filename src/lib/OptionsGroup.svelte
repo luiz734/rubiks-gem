@@ -5,7 +5,8 @@
         title: string,
         description: string,
     }
-    let { children, title, description }: Props = $props();
+
+    let {children, title, description}: Props = $props();
 
 </script>
 

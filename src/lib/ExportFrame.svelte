@@ -28,14 +28,14 @@
      style={settings.transparent ? checkerboard : ''}>
 
     <!-- inner: this is exactly what gets exported -->
-    <div bind:this={frame}
-         bind:clientWidth={width}
+    <div bind:clientWidth={width}
+         bind:this={frame}
          class="relative w-full h-full"
          style:background-color={settings.transparent ? 'transparent' : 'var(--color-base-content)'}>
 
         <div class="absolute"
-             style:left={pct(layout.cubeX)} style:top={pct(layout.cubeY)}
-             style:width={pct(layout.cubeSide)} style:height={pct(layout.cubeSide)}>
+             style:height={pct(layout.cubeSide)} style:left={pct(layout.cubeX)}
+             style:top={pct(layout.cubeY)} style:width={pct(layout.cubeSide)}>
             {@render children()}
         </div>
 

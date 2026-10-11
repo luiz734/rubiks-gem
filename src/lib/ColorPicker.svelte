@@ -32,8 +32,8 @@
         {#if defaultValue !== color}
             <button onclick={onClickReset}
                     class="btn btn-link  text-base-content/20">
-                <RotateCcw class="-m-t-2" size={16} />
-<!--                reset-->
+                <RotateCcw class="-m-t-2" size={16}/>
+                <!--                reset-->
             </button>
         {/if}
     </div>

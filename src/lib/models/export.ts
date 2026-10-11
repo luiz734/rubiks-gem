@@ -1,10 +1,8 @@
-import {toBlob} from "html-to-image";
+import { toBlob } from 'html-to-image'
 
 export const EXPORT_MIN_SIZE = 64
 export const EXPORT_MAX_SIZE = 1024
 const BAND_RATIO = 0.1
-const TEXT_RATIO = 0.6
-const TEXT_MAX_WIDTH_RATIO = 0.94
 
 export type SubtitlePosition = 'top' | 'bottom'
 
@@ -19,13 +17,16 @@ export type ExportLayout = {
 
 export function clampSize(value: number): number {
     if (!Number.isFinite(value)) return EXPORT_MIN_SIZE
-    return Math.min(EXPORT_MAX_SIZE, Math.max(EXPORT_MIN_SIZE, Math.round(value)))
+    return Math.min(
+        EXPORT_MAX_SIZE,
+        Math.max(EXPORT_MIN_SIZE, Math.round(value))
+    )
 }
 
 export function computeLayout(
     requestedSize: number,
     subtitle: string,
-    position: SubtitlePosition,
+    position: SubtitlePosition
 ): ExportLayout {
     const size = clampSize(requestedSize)
     const bandHeight = subtitle.trim() ? Math.round(size * BAND_RATIO) : 0
@@ -41,15 +42,10 @@ export function computeLayout(
     }
 }
 
-export type RenderOptions = {
+export function renderExport(
+    frame: HTMLElement,
     size: number
-    subtitle: string
-    position: SubtitlePosition
-    transparent: boolean
-    textColor: string
-}
-
-export function renderExport(frame: HTMLElement, size: number): Promise<Blob | null> {
+): Promise<Blob | null> {
     return toBlob(frame, {
         pixelRatio: 1,
         canvasWidth: size,

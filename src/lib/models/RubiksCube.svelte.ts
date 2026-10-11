@@ -1,6 +1,4 @@
 export type SideLocation = 'top' | 'right' | 'bottom' | 'left'
-
-export type PieceIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 export type PieceType = 'center' | 'edge' | 'corner'
 export type FacetValue = 0 | 1
 
@@ -23,13 +21,6 @@ export class Piece {
                 this.flipCycle = 3
                 break
         }
-    }
-
-    rotateCW() {
-        this.flipIndex = (this.flipIndex + 1) % this.flipCycle
-    }
-    rotateCCW() {
-        this.flipIndex = (this.flipIndex - 1 + this.flipCycle) % this.flipCycle
     }
 
     firstRotationState() {
@@ -131,23 +122,19 @@ export class RubiksCube {
     get arrowColor() {
         return this.arrowStyle.color
     }
-    set arrowColor(value: string) {
-        this.arrowStyle.color = value
-        this.arrowStyle.headColor = value
-    }
 
     colors = $state({
         sticker: DEFAULT_COLORS.sticker as string,
         empty: DEFAULT_COLORS.empty as string,
-    });
+    })
 
     strokes = $state({
         outer: DEFAULT_STROKES.outer as number,
         inner: DEFAULT_STROKES.inner as number,
         adjacent: DEFAULT_STROKES.adjacent as number,
-    });
+    })
 
-    transparentBg: boolean = $state(false);
+    transparentBg: boolean = $state(false)
 
     constructor(mode: ActiveMode) {
         this.state = [
@@ -172,7 +159,6 @@ export class RubiksCube {
         return val === 1 ? this.colors.sticker : this.colors.empty
     }
 
-
     private get steps() {
         return this.rotation / 90
     }
@@ -182,7 +168,7 @@ export class RubiksCube {
         for (let s = 0; s < this.steps; s++) [r, c] = [2 - c, r] // undo one CW turn
         return r * 3 + c
     }
-    /** inverse of sourceIndex: where does source piece i appear on screen? */
+    /** inverse of sourceIndex: where does source piece appear on screen? */
     private displayIndex(source: number): number {
         let r = Math.floor(source / 3),
             c = source % 3
@@ -263,11 +249,6 @@ export class RubiksCube {
         } else {
             this.arrows.push({ from, to: i })
         }
-    }
-
-    clearArrows() {
-        this.arrows = []
-        this.pendingFrom = null
     }
 
     clickSide(side: SideLocation, pos: number) {
@@ -356,5 +337,6 @@ export class RubiksCube {
 
     removeAllArrows() {
         this.arrows = []
+        this.pendingFrom = null
     }
 }

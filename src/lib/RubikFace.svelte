@@ -18,9 +18,7 @@
 
 <div class="w-full h-full">
     <svg class="h-full w-full"
-         // height={RubiksConstants.ViewportSize}
          viewBox="0 0 {RubiksConstants.ViewportSize} {RubiksConstants.ViewportSize}"
-         // width={RubiksConstants.ViewportSize}>
     >
         {#each rubiksCube.getFrontState() as val, i}
             <g
