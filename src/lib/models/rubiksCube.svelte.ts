@@ -119,10 +119,6 @@ export class RubiksCube {
         offset: 10,
     })
 
-    get arrowColor() {
-        return this.arrowStyle.color
-    }
-
     colors = $state({
         sticker: DEFAULT_COLORS.sticker as string,
         empty: DEFAULT_COLORS.empty as string,
@@ -133,8 +129,6 @@ export class RubiksCube {
         inner: DEFAULT_STROKES.inner as number,
         adjacent: DEFAULT_STROKES.adjacent as number,
     })
-
-    transparentBg: boolean = $state(false)
 
     constructor(mode: ActiveMode) {
         this.state = [

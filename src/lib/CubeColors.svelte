@@ -2,10 +2,11 @@
     import type {RubiksCube} from "./models/rubiksCube.svelte.js";
     import {DEFAULT_COLORS} from "./models/rubiksCube.svelte.js";
     import ColorPicker from "./ColorPicker.svelte";
+    import type {ExportSettings} from "./models/exportSettings.svelte";
 
     // Group color pickers for the cube
 
-    let {rubiksCube}: { rubiksCube: RubiksCube } = $props();
+    let {rubiksCube, settings}: { rubiksCube: RubiksCube,  settings: ExportSettings } = $props();
 
 </script>
 
@@ -15,12 +16,12 @@
         <ColorPicker bind:color={rubiksCube.colors.sticker} defaultValue={DEFAULT_COLORS.sticker}
                      label="Sticker Color"/>
         <ColorPicker bind:color={rubiksCube.colors.empty} defaultValue={DEFAULT_COLORS.empty} label="Empty Color"/>
-        <ColorPicker bind:color={rubiksCube.arrowColor} defaultValue={DEFAULT_COLORS.arrow} label="Arrow Color"/>
+        <ColorPicker bind:color={rubiksCube.arrowStyle.color} defaultValue={DEFAULT_COLORS.arrow} label="Arrow Color"/>
     </div>
 
 
     <label>
-        <input bind:checked={rubiksCube.transparentBg} class="checkbox" type="checkbox"/>
+        <input bind:checked={settings.transparent} class="checkbox" type="checkbox"/>
         Transparent Background
     </label>
 </div>

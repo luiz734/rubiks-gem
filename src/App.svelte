@@ -32,10 +32,16 @@
 
 <!--{["grid grid-cols-[min-content_1fr_400px] h-screen bg-black p-2 gap-2"], {smallScreen}}-->
 
-<div class={[
-   "flex flex-wrap bg-red-500 overflow-y-auto",
-   "xl:grid xl:grid-cols-[min-content_1fr_400px] xl:bg-blue-500",
-   "sm:bg-yellow-500",
+<!--<div class={[-->
+<!--   "flex flex-wrap bg-red-500 overflow-y-auto",-->
+<!--   "xl:grid xl:grid-cols-[min-content_1fr_400px] xl:bg-blue-500",-->
+<!--   "sm:bg-yellow-500",-->
+<!--   "h-screen p-2 gap-2"-->
+<!--]}>-->
+
+    <div class={[
+   "flex flex-wrap overflow-y-auto",
+   "xl:grid xl:grid-cols-[min-content_1fr_400px]",
    "h-screen p-2 gap-2"
 ]}>
 
@@ -73,7 +79,7 @@
         </OptionsGroup>
 
         <OptionsGroup description="Change colors of stikers, arrows and more." title="Colors">
-            <CubeColors rubiksCube={rubiksCube}/>
+            <CubeColors {settings} rubiksCube={rubiksCube}/>
         </OptionsGroup>
 
         <OptionsGroup description="Change strokes width." title="Strokes">
