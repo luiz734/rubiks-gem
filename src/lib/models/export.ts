@@ -1,7 +1,7 @@
 import { toBlob } from 'html-to-image'
 
-export const EXPORT_MIN_SIZE = 64
-export const EXPORT_MAX_SIZE = 1024
+export const EXPORT_MIN_SIZE = 8
+export const EXPORT_MAX_SIZE = 8192
 const BAND_RATIO = 0.1
 
 export type SubtitlePosition = 'top' | 'bottom'

@@ -12,6 +12,7 @@
     import {ExportSettings} from "./lib/models/exportSettings.svelte.js";
     import ExportFrame from "./lib/ExportFrame.svelte";
     import SubtitlesOptions from "./lib/SubtitlesOptions.svelte";
+    import {EXPORT_MAX_SIZE, EXPORT_MIN_SIZE} from "./lib/models/export";
 
 
     let rubiksCube = $state(
@@ -48,7 +49,9 @@
             <ActiveModeToggle rubiksCube={rubiksCube}/>
         </div>
 
-        <OptionsGroup description="Change size, subtitles and more." title="Export Options">
+        <OptionsGroup
+                description="Export as PNG from {EXPORT_MIN_SIZE}x{EXPORT_MIN_SIZE} to {EXPORT_MAX_SIZE}x{EXPORT_MAX_SIZE}."
+                title="Export Options">
             <SaveOptions {settings} targetDiv={frame}/>
         </OptionsGroup>
 

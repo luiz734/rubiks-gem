@@ -30,14 +30,32 @@
         }
     }
 
+    const outOfRange = $derived(settings.size !== settings.effectiveSize)
+
 </script>
 
-<div class="flex flex-col gap-y-2">
+<div class="flex flex-col gap-y-2  flex-1">
 
-    <div class="grid grid-cols[50px_50px] flex-1">
-        <input bind:value={settings.size} class="input" max={EXPORT_MAX_SIZE} min={EXPORT_MIN_SIZE}
-               step="1" type="number"/>
-        <button class="btn btn-success" disabled={!targetDiv} onclick={onClickDownload}> Download</button>
+    <div class="flex flex-col gap-y-2">
+        <label class="fieldset-legend text-sm shrink-0" for="export-width">Size</label>
+        <label class="input w-full" class:input-warning={outOfRange}>
+            <input aria-label="Image size in pixels"
+                   bind:value={settings.size}
+                   max={EXPORT_MAX_SIZE}
+                   min={EXPORT_MIN_SIZE}
+                   name="export-width"
+                   onblur={() => (settings.size = settings.effectiveSize)}
+                   step="1"
+                   type="number"/>
+            <span class="label">px</span>
+        </label>
     </div>
+
+    <div class="flex-1"></div>
+
+    <button class="btn btn-success" class:btn-disabled={outOfRange} disabled={!targetDiv} onclick={onClickDownload}>
+        Download
+    </button>
+
 
 </div>
