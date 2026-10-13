@@ -40,7 +40,7 @@
     <!--    First Column-->
     <div class="order-1 flex flex-col gap-y-2 flex-1">
 
-        <div class="flex-1 flex flex-col gap-y-8 {card} p-4">
+        <div class="flex-1 flex flex-col gap-y-8 {card} p-4 items-center">
             <ExportFrame bind:frame {settings}>
                 <RubikFace {rubiksCube}/>
             </ExportFrame>

@@ -26,7 +26,7 @@
 </script>
 
 <!--checkboard -->
-<div class="w-100 aspect-square border border-base-content/10"
+<div class="w-100 aspect-square border border-base-content/10 flex-1"
      style={settings.transparent ? checkerboard : ''}>
 
 <!--    exported content-->
