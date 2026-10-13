@@ -33,39 +33,52 @@
     function onClickReset(): void {
         settings.subtitle = "";
     }
+
+    let clearVisible = $derived(settings.subtitle !== "")
 </script>
 
-<div class="flex flex-col gap-y-2">
+<div class="flex flex-col gap-y-4">
 
-    <div class="flex flex-col flex-1 border rounded-2xl border-base-content/10 divide-y divide-base-content/10 my-4">
 
-        <div class="grid grid-cols-[minmax(100px,auto)_32px_minmax(0,75%)] p-4 content-center">
-            <div class="fieldset-legend text-sm">Position</div>
-            <div></div>
-            <select bind:value={settings.position} class="select w-auto">
-                <option value="top">Top</option>
-                <option value="bottom">Bottom</option>
-            </select>
-        </div>
-
-        <div class="grid grid-cols-[minmax(100px,auto)_32px_minmax(0,75%)] p-4 content-center">
-            <div class="fieldset-legend text-sm">Subtitle</div>
-            {@render resetIcon()}
-            <input bind:value={settings.subtitle} class="input w-auto" placeholder="Subtitle (optional)"
-                   type="text"/>
-        </div>
+    <div class="flex flex-col gap-y-2">
+        <label class="fieldset-legend text-sm" for="sub-position">Position</label>
+        <select bind:value={settings.position} class="select w-auto" name="sub-position">
+            <option value="top">Top</option>
+            <option value="bottom">Bottom</option>
+        </select>
     </div>
 
 
+    <div class="flex flex-col gap-y-2">
+        <label class="fieldset-legend text-sm shrink-0" for="sub-value">Subtitle</label>
 
+        <div class="relative flex flex-1">
+            <input bind:value={settings.subtitle} class="input w-full pr-12" name="sub-value"
+                   placeholder="Subtitle (optional)"
+                   type="text"/>
+            <div class="absolute -right-2 top-4 -translate-y-1/2">
+                {@render resetIcon()}
+            </div>
+        </div>
+
+
+    </div>
 </div>
 
+{#snippet clearButton()}
+    <button class={["btn btn-link text-base-content/20", clearVisible ? "visible" : "invisible"]}
+            onclick={onClickReset}>
+        Clear
+    </button>
+{/snippet}
+
+
 {#snippet resetIcon()}
-    <div class="max-w-32 h-8 -ml-4">
+    <div class="max-w-32 h-8">
         {#if settings.subtitle !== ""}
             <button onclick={onClickReset}
                     class="btn btn-link  text-base-content/20">
-                <RotateCcw class="-m-t-2" size={16}/>
+                <RotateCcw class="" size={16}/>
             </button>
         {/if}
     </div>

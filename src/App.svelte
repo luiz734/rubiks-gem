@@ -65,6 +65,10 @@
             <RotationSlider rubiksCube={rubiksCube}/>
         </OptionsGroup>
 
+        <OptionsGroup description="Control how subtitles appear." title="Subtitles">
+            <SubtitlesOptions {settings} targetDiv={frame}/>
+        </OptionsGroup>
+
         <OptionsGroup description="Change colors of stikers, arrows and more." title="Colors">
             <CubeColors rubiksCube={rubiksCube}/>
         </OptionsGroup>
@@ -73,9 +77,7 @@
             <CubeStrokes rubiksCube={rubiksCube}/>
         </OptionsGroup>
 
-        <OptionsGroup description="Control how subtitles appear." title="Subtitles">
-            <SubtitlesOptions {settings} targetDiv={frame}/>
-        </OptionsGroup>
+
     </div>
 
     <!--    Third Column-->
