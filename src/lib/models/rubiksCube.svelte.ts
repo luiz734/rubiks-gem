@@ -1,3 +1,5 @@
+import { ColorUtils } from './colors'
+
 export type SideLocation = 'top' | 'right' | 'bottom' | 'left'
 export type PieceType = 'center' | 'edge' | 'corner'
 export type FacetValue = 0 | 1
@@ -151,6 +153,10 @@ export class RubiksCube {
 
     public getColor(val: 0 | 1 | number): string {
         return val === 1 ? this.colors.sticker : this.colors.empty
+    }
+
+    public getPendingColor(): string {
+        return ColorUtils.shift(this.colors.sticker, 0.25)
     }
 
     private get steps() {
