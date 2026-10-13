@@ -11,6 +11,7 @@
     import SaveOptions from "./lib/SaveOptions.svelte";
     import {ExportSettings} from "./lib/models/exportSettings.svelte.js";
     import ExportFrame from "./lib/ExportFrame.svelte";
+    import SubtitlesOptions from "./lib/SubtitlesOptions.svelte";
 
 
     let rubiksCube = $state(
@@ -70,6 +71,10 @@
 
         <OptionsGroup description="Change strokes width." title="Strokes">
             <CubeStrokes rubiksCube={rubiksCube}/>
+        </OptionsGroup>
+
+        <OptionsGroup description="Control how subtitles appear." title="Subtitles">
+            <SubtitlesOptions {settings} targetDiv={frame}/>
         </OptionsGroup>
     </div>
 

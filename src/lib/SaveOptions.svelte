@@ -30,31 +30,9 @@
         }
     }
 
-    function onClickReset(): void {
-        settings.subtitle = "";
-    }
 </script>
 
 <div class="flex flex-col gap-y-2">
-
-    <div class="flex flex-col flex-1 border rounded-2xl border-base-content/10 divide-y divide-base-content/10 my-4">
-
-        <div class="grid grid-cols-[minmax(100px,auto)_32px_minmax(0,75%)] p-4 content-center">
-            <div class="fieldset-legend text-sm">Position</div>
-            <div></div>
-            <select bind:value={settings.position} class="select w-auto">
-                <option value="top">Top</option>
-                <option value="bottom">Bottom</option>
-            </select>
-        </div>
-
-        <div class="grid grid-cols-[minmax(100px,auto)_32px_minmax(0,75%)] p-4 content-center">
-            <div class="fieldset-legend text-sm">Subtitle</div>
-            {@render resetIcon()}
-            <input bind:value={settings.subtitle} class="input w-auto" placeholder="Subtitle (optional)"
-                   type="text"/>
-        </div>
-    </div>
 
     <div class="grid grid-cols[50px_50px] flex-1">
         <input bind:value={settings.size} class="input" max={EXPORT_MAX_SIZE} min={EXPORT_MIN_SIZE}
@@ -63,14 +41,3 @@
     </div>
 
 </div>
-
-{#snippet resetIcon()}
-    <div class="max-w-32 h-8 -ml-4">
-        {#if settings.subtitle !== ""}
-            <button onclick={onClickReset}
-                    class="btn btn-link  text-base-content/20">
-                <RotateCcw class="-m-t-2" size={16}/>
-            </button>
-        {/if}
-    </div>
-{/snippet}
