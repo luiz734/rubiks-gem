@@ -1,12 +1,16 @@
 import type { Persistable } from './persist.svelte'
 import { clampSize } from './export'
+import { HEX_COLOR_REGEX } from './colors'
 
 export const SUBTITLE_POSITIONS = ['top', 'bottom'] as const
 export type SubtitlePosition = (typeof SUBTITLE_POSITIONS)[number]
 export function isSubtitlePosition(value: unknown): value is SubtitlePosition {
     return SUBTITLE_POSITIONS.includes(value as SubtitlePosition)
 }
-const HEX_COLOR = /^#[0-9a-fA-F]{6}$/
+
+export function isHexColor(value: string | null | undefined): boolean {
+    return value !== null && value !== undefined && HEX_COLOR_REGEX.test(value)
+}
 
 export class ExportSettings implements Persistable {
     size = $state(512)
@@ -37,11 +41,7 @@ export class ExportSettings implements Persistable {
 
         if (isSubtitlePosition(data?.position)) this.position = data.position
 
-        if (
-            typeof data?.textColor === 'string' &&
-            HEX_COLOR.test(data.textColor)
-        )
-            this.textColor = data.textColor
+        if (isHexColor(data?.textColor)) this.textColor = data.textColor
 
         if (typeof data?.transparent === 'boolean')
             this.transparent = data.transparent

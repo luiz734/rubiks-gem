@@ -1,3 +1,5 @@
+export const HEX_COLOR_REGEX = /^#[0-9a-fA-F]{6}$/
+
 export class ColorUtils {
     private static parse(hex: string): [number, number, number] {
         let h = hex.replace('#', '')

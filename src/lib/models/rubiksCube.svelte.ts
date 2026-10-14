@@ -1,5 +1,6 @@
 import { ColorUtils } from './colors'
 import { Piece } from './piece.svelte'
+import { isHexColor } from './exportSettings.svelte'
 
 export const ACTIVE_MODES = ['oll', 'pll'] as const
 export const DEFAULT_COLORS = {
@@ -8,15 +9,16 @@ export const DEFAULT_COLORS = {
     arrow: '#0020FF',
 } as const
 export const DEFAULT_STROKES = { outer: 4, inner: 4, adjacent: 4 } as const
-
 export type SideLocation = 'top' | 'right' | 'bottom' | 'left'
 export type FacetValue = 0 | 1
-export type RotationAngle = 0 | 90 | 180 | 270
+
+const ROTATION_ANGLES = [0, 90, 180, 270] as const
+export type RotationAngle = (typeof ROTATION_ANGLES)[number]
+
 export type ActiveMode = (typeof ACTIVE_MODES)[number]
 export type Arrow = { from: number; to: number }
 export type ArrowStyle = {
     color: string
-    headColor: string
     width: number
     offset: number // px trimmed from each end, measured from the piece centers
 }
@@ -56,6 +58,10 @@ export function isActiveMode(value: unknown): value is ActiveMode {
     return ACTIVE_MODES.includes(value as ActiveMode)
 }
 
+function isRotationAngle(value: unknown): value is RotationAngle {
+    return ROTATION_ANGLES.includes(value as RotationAngle)
+}
+
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
     private static readonly CORNERS = [0, 2, 6, 8]
@@ -85,7 +91,6 @@ export class RubiksCube {
     pendingFrom = $state<number | null>(null)
     arrowStyle = $state<ArrowStyle>({
         color: DEFAULT_COLORS.arrow,
-        headColor: DEFAULT_COLORS.arrow,
         width: DEFAULT_ARROW_WIDTH,
         offset: DEFAULT_ARROW_OFFSET,
     })
@@ -123,13 +128,72 @@ export class RubiksCube {
     serialize() {
         return {
             activeMode: this.mode,
+            pieces: this.state.map((p) => p.serialize()),
+            savedFlips: this.#savedFlips,
+            rotation: this.rotation,
+            arrows: this.arrows,
+            arrowStyle: this.arrowStyle,
+            colors: this.colors,
+            strokes: this.strokes,
         }
     }
 
     restore(data: any) {
+        // ORDER MATTERS!
+        // Be careful!!!
+
+        if (isRotationAngle(data?.rotation)) this.rotation = data.rotation
+
+        data?.pieces.forEach((x: any, index: number) => {
+            this.state[index].restore(x)
+        })
+
         // Pieces must come first
         // See the setter of this.mode
         if (isActiveMode(data?.activeMode)) this.mode = data.activeMode
+
+        // The setter of 'mode' overwrites 'savedFlips'
+        // This must come AFTER it
+        this.#savedFlips = data?.savedFlips ?? []
+
+        this.arrows = data?.arrows ?? []
+
+        // We don't save pending state
+        // This does nothing. It is Just to be explicit about it
+        this.pendingFrom = null
+
+        this.arrowStyle = {
+            color: isHexColor(data?.arrowStyle?.color)
+                ? data.arrowStyle.color
+                : DEFAULT_COLORS.arrow,
+            width: isFiniteNumber(data?.arrowStyle?.width)
+                ? data.arrowStyle.width
+                : DEFAULT_ARROW_WIDTH,
+            offset: isFiniteNumber(data?.arrowStyle?.offset)
+                ? data.arrowStyle.offset
+                : DEFAULT_ARROW_OFFSET,
+        }
+
+        this.colors = {
+            sticker: isHexColor(data?.colors?.sticker)
+                ? data.colors.sticker
+                : DEFAULT_COLORS.sticker,
+            empty: isHexColor(data?.colors?.empty)
+                ? data.colors.empty
+                : DEFAULT_COLORS.empty,
+        }
+
+        this.strokes = {
+            outer: isFiniteNumber(data?.strokes?.outer)
+                ? data.strokes.outer
+                : (DEFAULT_STROKES.outer as number),
+            inner: isFiniteNumber(data?.strokes?.inner)
+                ? data.strokes.inner
+                : (DEFAULT_STROKES.inner as number),
+            adjacent: isFiniteNumber(data?.strokes?.adjacent)
+                ? data.strokes.adjacent
+                : (DEFAULT_STROKES.adjacent as number),
+        }
     }
 
     // ******************************************* Getters/Setters
@@ -363,4 +427,8 @@ export class RubiksCube {
             }
         }
     }
+}
+
+function isFiniteNumber(value: any): boolean {
+    return typeof value === 'number' && Number.isFinite(value)
 }
