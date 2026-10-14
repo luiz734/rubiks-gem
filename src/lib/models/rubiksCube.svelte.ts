@@ -1,44 +1,36 @@
 import { ColorUtils } from './colors'
+import { Piece } from './piece.svelte'
+
+export const ACTIVE_MODES = ['oll', 'pll'] as const
+export const DEFAULT_COLORS = {
+    sticker: '#FFE600',
+    empty: '#4A4A4A',
+    arrow: '#0020FF',
+} as const
+export const DEFAULT_STROKES = { outer: 4, inner: 4, adjacent: 4 } as const
 
 export type SideLocation = 'top' | 'right' | 'bottom' | 'left'
-export type PieceType = 'center' | 'edge' | 'corner'
 export type FacetValue = 0 | 1
-
-export class Piece {
-    flipIndex = $state<number>(0)
-    readonly flipCycle: 1 | 2 | 3
-    type: PieceType
-
-    constructor(type: PieceType) {
-        this.type = type
-
-        switch (type) {
-            case 'center':
-                this.flipCycle = 1
-                break
-            case 'edge':
-                this.flipCycle = 2
-                break
-            case 'corner':
-                this.flipCycle = 3
-                break
-        }
-    }
-
-    firstRotationState() {
-        this.flipIndex = 0
-    }
-    lastRotationState() {
-        this.flipIndex = this.flipCycle - 1
-    }
-
-    isFacingUp(): boolean {
-        return this.flipIndex === 0
-    }
+export type RotationAngle = 0 | 90 | 180 | 270
+export type ActiveMode = (typeof ACTIVE_MODES)[number]
+export type Arrow = { from: number; to: number }
+export type ArrowStyle = {
+    color: string
+    headColor: string
+    width: number
+    offset: number // px trimmed from each end, measured from the piece centers
+}
+export type ArrowGroup = {
+    kind: 'single' | 'double'
+    from: number
+    to: number
+    srcFrom: number
+    srcTo: number
 }
 
 type Face = 'front' | SideLocation
 
+const SIDES: SideLocation[] = ['top', 'right', 'bottom', 'left']
 // MARKER_FACES[pieceIndex][flipIndex] = face marker is
 const MARKER_FACES: Face[][] = [
     ['front', 'left', 'top'], // 0 corner
@@ -51,7 +43,6 @@ const MARKER_FACES: Face[][] = [
     ['front', 'bottom'], // 7 edge
     ['front', 'right', 'bottom'], // 8 corner
 ]
-
 const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
     top: [0, 1, 2],
     right: [2, 5, 8],
@@ -59,40 +50,9 @@ const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
     left: [0, 3, 6],
 }
 
-const SIDES: SideLocation[] = ['top', 'right', 'bottom', 'left']
-export type RotationAngle = 0 | 90 | 180 | 270
-
-// export type ActiveMode = 'oll' | 'pll'
-export const ACTIVE_MODES = ['oll', 'pll'] as const
-export type ActiveMode = (typeof ACTIVE_MODES)[number]
 export function isActiveMode(value: unknown): value is ActiveMode {
     return ACTIVE_MODES.includes(value as ActiveMode)
 }
-
-
-export type Arrow = { from: number; to: number }
-export type ArrowStyle = {
-    color: string
-    headColor: string
-    width: number
-    offset: number // px trimmed from each end, measured from the piece centers
-}
-
-export type ArrowGroup = {
-    kind: 'single' | 'double'
-    from: number
-    to: number
-    srcFrom: number
-    srcTo: number
-}
-
-export const DEFAULT_COLORS = {
-    sticker: '#FFE600',
-    empty: '#4A4A4A',
-    arrow: '#0020FF',
-} as const
-
-export const DEFAULT_STROKES = { outer: 4, inner: 4, adjacent: 4 } as const
 
 export class RubiksCube {
     private static readonly EDGES = [1, 3, 5, 7]
@@ -139,7 +99,7 @@ export class RubiksCube {
         adjacent: DEFAULT_STROKES.adjacent as number,
     })
 
-    constructor(mode: ActiveMode) {
+    constructor() {
         this.state = [
             new Piece('corner'),
             new Piece('edge'),
@@ -154,10 +114,10 @@ export class RubiksCube {
             new Piece('corner'),
         ]
 
-        this.mode = mode
-        // $inspect(this.rotation);
+        this.mode = 'oll'
     }
 
+    // ******************************************* Persist Interface
     serialize() {
         return {
             activeMode: this.mode,
@@ -170,51 +130,55 @@ export class RubiksCube {
         if (isActiveMode(data?.activeMode)) this.mode = data.activeMode
     }
 
-    public getColor(val: 0 | 1 | number): string {
-        return val === 1 ? this.colors.sticker : this.colors.empty
-    }
-
-    public getPendingColor(): string {
-        return ColorUtils.shift(this.colors.sticker, 0.25)
-    }
-
-    private get steps() {
-        return this.rotation / 90
-    }
-    private sourceIndex(display: number): number {
-        let r = Math.floor(display / 3),
-            c = display % 3
-        for (let s = 0; s < this.steps; s++) [r, c] = [2 - c, r] // undo one CW turn
-        return r * 3 + c
-    }
-    /** inverse of sourceIndex: where does source piece appear on screen? */
-    private displayIndex(source: number): number {
-        let r = Math.floor(source / 3),
-            c = source % 3
-        for (let s = 0; s < this.steps; s++) [r, c] = [c, 2 - r] // one CW turn
-        return r * 3 + c
-    }
+    // ******************************************* Getters/Setters
     get displayArrows() {
         return this.arrows.map((a) => ({
             from: this.displayIndex(a.from),
             to: this.displayIndex(a.to),
         }))
     }
+
+    // get ollMode() {
+    //     return this.#mode === 'oll'
+    // }
+
+    get pllMode() {
+        return this.#mode === 'pll'
+    }
+
+    get arrowGroups(): ArrowGroup[] {
+        const groups: ArrowGroup[] = []
+        const used = new Set<number>()
+
+        this.arrows.forEach((a, k) => {
+            if (used.has(k)) return
+            const r = this.arrows.findIndex(
+                (b, j) =>
+                    j > k && !used.has(j) && b.from === a.to && b.to === a.from
+            )
+            if (r >= 0) used.add(r)
+            groups.push({
+                kind: r >= 0 ? 'double' : 'single',
+                from: this.displayIndex(a.from),
+                to: this.displayIndex(a.to),
+                srcFrom: a.from,
+                srcTo: a.to,
+            })
+        })
+        return groups
+    }
+
+    // ******************************************* Public
+    getColor(val: 0 | 1 | number): string {
+        return val === 1 ? this.colors.sticker : this.colors.empty
+    }
+
+    getPendingColor(): string {
+        return ColorUtils.shift(this.colors.sticker, 0.25)
+    }
+
     isPending(displayIndex: number): boolean {
         return this.pendingFrom === this.sourceIndex(displayIndex)
-    }
-
-    private sourceSide(side: SideLocation): SideLocation {
-        return SIDES[(SIDES.indexOf(side) - this.steps + 4) % 4]
-    }
-
-    private markerFace(i: number): Face {
-        return MARKER_FACES[i][this.state[i].flipIndex]
-    }
-
-    private pointPiece(i: number, face: Face) {
-        const idx = MARKER_FACES[i].indexOf(face)
-        if (idx !== -1) this.state[i].flipIndex = idx
     }
 
     getFrontState(): FacetValue[] {
@@ -240,6 +204,91 @@ export class RubiksCube {
             this.clickPll(i)
         }
     }
+
+    clickSide(side: SideLocation, pos: number) {
+        if (this.mode === 'pll') {
+            return
+        }
+        const i = this.sourceIndex(SIDE_INDICES[side][pos])
+        this.pointPiece(i, this.sourceSide(side))
+    }
+
+    rotateBy(delta: 90 | -90) {
+        this.rotation = ((this.rotation + delta + 360) % 360) as RotationAngle
+    }
+
+    setAllEdges(value: FacetValue) {
+        this.setPieces(RubiksCube.EDGES, value)
+    }
+    setAllCorners(value: FacetValue) {
+        this.setPieces(RubiksCube.CORNERS, value)
+    }
+
+    allEdgesFilled(): boolean {
+        return RubiksCube.EDGES.every((i) => this.state[i].isFacingUp())
+    }
+    allCornersFilled(): boolean {
+        return RubiksCube.CORNERS.every((i) => this.state[i].isFacingUp())
+    }
+
+    setAllPieces(value: 0 | 1) {
+        this.setAllEdges(value)
+        this.setAllCorners(value)
+        // center piece
+        // this.state.values[4] = value;
+    }
+
+    allPiecesFilled(): boolean {
+        return this.allEdgesFilled() && this.allCornersFilled()
+    }
+
+    removeArrow(srcFrom: number, srcTo: number) {
+        this.arrows = this.arrows.filter(
+            (a) =>
+                !(
+                    (a.from === srcFrom && a.to === srcTo) ||
+                    (a.from === srcTo && a.to === srcFrom)
+                )
+        )
+    }
+
+    removeAllArrows() {
+        this.arrows = []
+        this.pendingFrom = null
+    }
+
+    // ******************************************* Private
+    private get steps() {
+        return this.rotation / 90
+    }
+
+    private sourceIndex(display: number): number {
+        let r = Math.floor(display / 3),
+            c = display % 3
+        for (let s = 0; s < this.steps; s++) [r, c] = [2 - c, r] // undo one CW turn
+        return r * 3 + c
+    }
+    /** inverse of sourceIndex: where does source piece appear on screen? */
+    private displayIndex(source: number): number {
+        let r = Math.floor(source / 3),
+            c = source % 3
+        for (let s = 0; s < this.steps; s++) [r, c] = [c, 2 - r] // one CW turn
+        return r * 3 + c
+    }
+
+    private sourceSide(side: SideLocation): SideLocation {
+        return SIDES[(SIDES.indexOf(side) - this.steps + 4) % 4]
+    }
+
+    private markerFace(i: number): Face {
+        return MARKER_FACES[i][this.state[i].flipIndex]
+    }
+
+    private pointPiece(i: number, face: Face) {
+        const idx = MARKER_FACES[i].indexOf(face)
+        if (idx !== -1) this.state[i].flipIndex = idx
+    }
+
     private clickPll(i: number) {
         if (this.pendingFrom === null) {
             this.pendingFrom = i
@@ -270,92 +319,11 @@ export class RubiksCube {
         }
     }
 
-    clickSide(side: SideLocation, pos: number) {
-        if (this.mode === 'pll') {
-            return
-        }
-        const i = this.sourceIndex(SIDE_INDICES[side][pos])
-        this.pointPiece(i, this.sourceSide(side))
-    }
-
-    rotateBy(delta: 90 | -90) {
-        this.rotation = ((this.rotation + delta + 360) % 360) as RotationAngle
-    }
-
     private setPieces(indices: number[], value: FacetValue) {
         for (const i of indices) {
             const p = this.state[i]
             if (value === 1) p.firstRotationState()
             else p.lastRotationState()
         }
-    }
-
-    setAllEdges(value: FacetValue) {
-        this.setPieces(RubiksCube.EDGES, value)
-    }
-    setAllCorners(value: FacetValue) {
-        this.setPieces(RubiksCube.CORNERS, value)
-    }
-
-    allEdgesFilled(): boolean {
-        return RubiksCube.EDGES.every((i) => this.state[i].isFacingUp())
-    }
-    allCornersFilled(): boolean {
-        return RubiksCube.CORNERS.every((i) => this.state[i].isFacingUp())
-    }
-
-    setAllPieces(value: 0 | 1) {
-        this.setAllEdges(value)
-        this.setAllCorners(value)
-        // center piece
-        // this.state.values[4] = value;
-    }
-
-    allPiecesFilled(): boolean {
-        return this.allEdgesFilled() && this.allCornersFilled()
-    }
-    get ollMode() {
-        return this.#mode === 'oll'
-    }
-
-    get pllMode() {
-        return this.#mode === 'pll'
-    }
-
-    get arrowGroups(): ArrowGroup[] {
-        const groups: ArrowGroup[] = []
-        const used = new Set<number>()
-
-        this.arrows.forEach((a, k) => {
-            if (used.has(k)) return
-            const r = this.arrows.findIndex(
-                (b, j) =>
-                    j > k && !used.has(j) && b.from === a.to && b.to === a.from
-            )
-            if (r >= 0) used.add(r)
-            groups.push({
-                kind: r >= 0 ? 'double' : 'single',
-                from: this.displayIndex(a.from),
-                to: this.displayIndex(a.to),
-                srcFrom: a.from,
-                srcTo: a.to,
-            })
-        })
-        return groups
-    }
-
-    removeArrow(srcFrom: number, srcTo: number) {
-        this.arrows = this.arrows.filter(
-            (a) =>
-                !(
-                    (a.from === srcFrom && a.to === srcTo) ||
-                    (a.from === srcTo && a.to === srcFrom)
-                )
-        )
-    }
-
-    removeAllArrows() {
-        this.arrows = []
-        this.pendingFrom = null
     }
 }

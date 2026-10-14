@@ -18,7 +18,7 @@
     const settings = new ExportSettings();
     persist("rubiksgem_settings", settings)
 
-    const rubiksCube = new RubiksCube("oll")
+    const rubiksCube = new RubiksCube()
     persist("rubiksgem_cubestate", rubiksCube)
 
     let frame = $state<HTMLElement | undefined>();
