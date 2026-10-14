@@ -24,7 +24,7 @@
     }
 </script>
 
-<fieldset class="flex flex-row items-center gap-2 flex-1 p-4">
+<fieldset class="flex flex-row items-center gap-2 flex-1 p-2 sm:p-4">
 
     <div class="fieldset-legend text-sm flex-1 whitespace-nowrap">{label}</div>
 
@@ -41,7 +41,7 @@
     <input
             aria-label={label}
             bind:value={width}
-            class="range range-xs w-32 shrink-0"
+            class="range range-xs w-26 sm:w-28 xl:32 shrink-0"
             {max}
             {min}
             step="1"
