@@ -13,33 +13,20 @@
     import ExportFrame from "./lib/ExportFrame.svelte";
     import SubtitlesOptions from "./lib/SubtitlesOptions.svelte";
     import {EXPORT_MAX_SIZE, EXPORT_MIN_SIZE} from "./lib/models/export";
+    import {persist} from "./lib/models/persist.svelte";
 
+    const settings = new ExportSettings();
+    persist("rubiksgem_settings", settings)
 
-    let rubiksCube = $state(
-        new RubiksCube("oll")
-    );
+    const rubiksCube = new RubiksCube("oll")
+    persist("rubiksgem_cubestate", rubiksCube)
 
-    // let cubeDiv: HTMLDivElement | undefined = $state()
-
-    $inspect(rubiksCube);
-
-    let settings = new ExportSettings();
     let frame = $state<HTMLElement | undefined>();
 
-    let card = "rounded-2xl border-2 border-base-100 bg-base-200"
 
 </script>
 
-<!--{["grid grid-cols-[min-content_1fr_400px] h-screen bg-black p-2 gap-2"], {smallScreen}}-->
-
-<!--<div class={[-->
-<!--   "flex flex-wrap bg-red-500 overflow-y-auto",-->
-<!--   "xl:grid xl:grid-cols-[min-content_1fr_400px] xl:bg-blue-500",-->
-<!--   "sm:bg-yellow-500",-->
-<!--   "h-screen p-2 gap-2"-->
-<!--]}>-->
-
-    <div class={[
+<div class={[
    "flex flex-wrap overflow-y-auto",
    "xl:grid xl:grid-cols-[min-content_1fr_400px]",
    "h-screen p-2 gap-2"
@@ -48,7 +35,7 @@
     <!--    First Column-->
     <div class="order-1 flex flex-col gap-y-2 flex-1">
 
-        <div class="flex-1 flex flex-col gap-y-8 {card} p-4 items-center">
+        <div class="flex-1 flex flex-col gap-y-8 rounded-2xl border-2 border-base-100 bg-base-200 p-4 items-center">
             <ExportFrame bind:frame {settings}>
                 <RubikFace {rubiksCube}/>
             </ExportFrame>

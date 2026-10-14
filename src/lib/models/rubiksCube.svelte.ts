@@ -61,7 +61,14 @@ const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
 
 const SIDES: SideLocation[] = ['top', 'right', 'bottom', 'left']
 export type RotationAngle = 0 | 90 | 180 | 270
-export type ActiveMode = 'oll' | 'pll'
+
+// export type ActiveMode = 'oll' | 'pll'
+export const ACTIVE_MODES = ['oll', 'pll'] as const
+export type ActiveMode = (typeof ACTIVE_MODES)[number]
+export function isActiveMode(value: unknown): value is ActiveMode {
+    return ACTIVE_MODES.includes(value as ActiveMode)
+}
+
 
 export type Arrow = { from: number; to: number }
 export type ArrowStyle = {
@@ -149,6 +156,18 @@ export class RubiksCube {
 
         this.mode = mode
         // $inspect(this.rotation);
+    }
+
+    serialize() {
+        return {
+            activeMode: this.mode,
+        }
+    }
+
+    restore(data: any) {
+        // Pieces must come first
+        // See the setter of this.mode
+        if (isActiveMode(data?.activeMode)) this.mode = data.activeMode
     }
 
     public getColor(val: 0 | 1 | number): string {
