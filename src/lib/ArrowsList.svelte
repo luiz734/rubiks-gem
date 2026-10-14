@@ -77,7 +77,7 @@
                 </div>
 
                 <button class="btn btn-ghost btn-square btn-sm" aria-label="Delete arrow"
-                        onclick={() => rubiksCube.removeArrow(g.srcFrom, g.srcTo)}>
+                        onclick={() => rubiksCube.removeSingleArrow(g.srcFrom, g.srcTo)}>
                     <Trash/>
                 </button>
             </div>

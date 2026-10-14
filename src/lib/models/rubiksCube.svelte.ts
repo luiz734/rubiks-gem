@@ -49,6 +49,8 @@ const SIDE_INDICES: Record<SideLocation, [number, number, number]> = {
     bottom: [6, 7, 8],
     left: [0, 3, 6],
 }
+const DEFAULT_ARROW_WIDTH = 12
+const DEFAULT_ARROW_OFFSET = 10
 
 export function isActiveMode(value: unknown): value is ActiveMode {
     return ACTIVE_MODES.includes(value as ActiveMode)
@@ -84,8 +86,8 @@ export class RubiksCube {
     arrowStyle = $state<ArrowStyle>({
         color: DEFAULT_COLORS.arrow,
         headColor: DEFAULT_COLORS.arrow,
-        width: 12,
-        offset: 10,
+        width: DEFAULT_ARROW_WIDTH,
+        offset: DEFAULT_ARROW_OFFSET,
     })
 
     colors = $state({
@@ -133,8 +135,8 @@ export class RubiksCube {
     // ******************************************* Getters/Setters
     get displayArrows() {
         return this.arrows.map((a) => ({
-            from: this.displayIndex(a.from),
-            to: this.displayIndex(a.to),
+            from: this.source2Display(a.from),
+            to: this.source2Display(a.to),
         }))
     }
 
@@ -146,30 +148,42 @@ export class RubiksCube {
         return this.#mode === 'pll'
     }
 
+    // Group pairs of opposite arrows
+    // E.g. 0->1 and 1->0
     get arrowGroups(): ArrowGroup[] {
         const groups: ArrowGroup[] = []
-        const used = new Set<number>()
+        const alreadyGrouped = new Set<number>()
 
-        this.arrows.forEach((a, k) => {
-            if (used.has(k)) return
-            const r = this.arrows.findIndex(
-                (b, j) =>
-                    j > k && !used.has(j) && b.from === a.to && b.to === a.from
+        const isReverseOf = (a: Arrow, b: Arrow): boolean =>
+            b.from === a.to && b.to === a.from
+
+        this.arrows.forEach((arrow: Arrow, arrowIndex: number): void => {
+            if (alreadyGrouped.has(arrowIndex)) return
+
+            const reverseIndex = this.arrows.findIndex(
+                (candidate, candidateIndex) =>
+                    candidateIndex > arrowIndex &&
+                    !alreadyGrouped.has(candidateIndex) &&
+                    isReverseOf(arrow, candidate)
             )
-            if (r >= 0) used.add(r)
+            const hasReverse = reverseIndex >= 0
+
+            if (hasReverse) alreadyGrouped.add(reverseIndex)
+
             groups.push({
-                kind: r >= 0 ? 'double' : 'single',
-                from: this.displayIndex(a.from),
-                to: this.displayIndex(a.to),
-                srcFrom: a.from,
-                srcTo: a.to,
+                kind: hasReverse ? 'double' : 'single',
+                from: this.source2Display(arrow.from),
+                to: this.source2Display(arrow.to),
+                srcFrom: arrow.from,
+                srcTo: arrow.to,
             })
         })
+
         return groups
     }
 
     // ******************************************* Public
-    getColor(val: 0 | 1 | number): string {
+    getStickerColor(val: 0 | 1 | number): string {
         return val === 1 ? this.colors.sticker : this.colors.empty
     }
 
@@ -178,39 +192,41 @@ export class RubiksCube {
     }
 
     isPending(displayIndex: number): boolean {
-        return this.pendingFrom === this.sourceIndex(displayIndex)
+        return this.pendingFrom === this.display2Source(displayIndex)
     }
 
     getFrontState(): FacetValue[] {
         return this.state.map((_, d) =>
-            this.markerFace(this.sourceIndex(d)) === 'front' ? 1 : 0
+            this.getMarkerFace(this.display2Source(d)) === 'front' ? 1 : 0
         )
     }
 
     getSideState(which: SideLocation): FacetValue[] {
+        // Side considering the rotation
         const src = this.sourceSide(which)
         return SIDE_INDICES[which].map((d) =>
-            this.markerFace(this.sourceIndex(d)) === src ? 1 : 0
+            this.getMarkerFace(this.display2Source(d)) === src ? 1 : 0
         )
     }
 
     // Clicks only happen in pll mode
     // oll all pieces should always face top
     clickFront(displayIndex: number) {
-        const i = this.sourceIndex(displayIndex)
+        const i = this.display2Source(displayIndex)
         if (this.mode === 'oll') {
-            this.pointPiece(i, 'front')
+            this.setMarkerToFace(i, 'front')
         } else {
             this.clickPll(i)
         }
     }
 
+    // Side is the same as "adjacent"
     clickSide(side: SideLocation, pos: number) {
         if (this.mode === 'pll') {
             return
         }
-        const i = this.sourceIndex(SIDE_INDICES[side][pos])
-        this.pointPiece(i, this.sourceSide(side))
+        const i = this.display2Source(SIDE_INDICES[side][pos])
+        this.setMarkerToFace(i, this.sourceSide(side))
     }
 
     rotateBy(delta: 90 | -90) {
@@ -218,10 +234,10 @@ export class RubiksCube {
     }
 
     setAllEdges(value: FacetValue) {
-        this.setPieces(RubiksCube.EDGES, value)
+        this.setPiecesUpOrDown(RubiksCube.EDGES, value)
     }
     setAllCorners(value: FacetValue) {
-        this.setPieces(RubiksCube.CORNERS, value)
+        this.setPiecesUpOrDown(RubiksCube.CORNERS, value)
     }
 
     allEdgesFilled(): boolean {
@@ -234,15 +250,14 @@ export class RubiksCube {
     setAllPieces(value: 0 | 1) {
         this.setAllEdges(value)
         this.setAllCorners(value)
-        // center piece
-        // this.state.values[4] = value;
+        // Centerpiece never changes
     }
 
     allPiecesFilled(): boolean {
         return this.allEdgesFilled() && this.allCornersFilled()
     }
 
-    removeArrow(srcFrom: number, srcTo: number) {
+    removeSingleArrow(srcFrom: number, srcTo: number) {
         this.arrows = this.arrows.filter(
             (a) =>
                 !(
@@ -258,35 +273,52 @@ export class RubiksCube {
     }
 
     // ******************************************* Private
-    private get steps() {
+    private get rotationSteps() {
         return this.rotation / 90
     }
 
-    private sourceIndex(display: number): number {
+    // Given a display index, returns the same index without rotation
+    private display2Source(display: number): number {
         let r = Math.floor(display / 3),
             c = display % 3
-        for (let s = 0; s < this.steps; s++) [r, c] = [2 - c, r] // undo one CW turn
+
+        // Undo rotationSteps CW turns
+        for (let s = 0; s < this.rotationSteps; s++) {
+            ;[r, c] = [2 - c, r]
+        }
         return r * 3 + c
     }
-    /** inverse of sourceIndex: where does source piece appear on screen? */
-    private displayIndex(source: number): number {
+    // Inverse of display2Source
+    private source2Display(source: number): number {
         let r = Math.floor(source / 3),
             c = source % 3
-        for (let s = 0; s < this.steps; s++) [r, c] = [c, 2 - r] // one CW turn
+
+        for (let s = 0; s < this.rotationSteps; s++) {
+            ;[r, c] = [c, 2 - r]
+        }
         return r * 3 + c
     }
 
+    // A side considering rotation
+    // E.g.:
+    //          ['top', 'right', 'bottom', 'left']
+    // turns into
+    //          [ 'bottom', 'left', 'top', 'right']
+    // with 2 rotations.
     private sourceSide(side: SideLocation): SideLocation {
-        return SIDES[(SIDES.indexOf(side) - this.steps + 4) % 4]
+        return SIDES[(SIDES.indexOf(side) - this.rotationSteps + 4) % 4]
     }
 
-    private markerFace(i: number): Face {
+    // Returns the face which "marker" (yellow face) currently is
+    private getMarkerFace(i: number): Face {
         return MARKER_FACES[i][this.state[i].flipIndex]
     }
 
-    private pointPiece(i: number, face: Face) {
+    private setMarkerToFace(i: number, face: Face) {
         const idx = MARKER_FACES[i].indexOf(face)
-        if (idx !== -1) this.state[i].flipIndex = idx
+        if (idx !== -1) {
+            this.state[i].flipIndex = idx
+        }
     }
 
     private clickPll(i: number) {
@@ -319,11 +351,16 @@ export class RubiksCube {
         }
     }
 
-    private setPieces(indices: number[], value: FacetValue) {
+    // Down means not facing up in this context
+    // We just care about it not facing up
+    private setPiecesUpOrDown(indices: number[], value: FacetValue) {
         for (const i of indices) {
             const p = this.state[i]
-            if (value === 1) p.firstRotationState()
-            else p.lastRotationState()
+            if (value === 1) {
+                p.firstRotationState()
+            } else {
+                p.lastRotationState()
+            }
         }
     }
 }
