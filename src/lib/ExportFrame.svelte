@@ -26,14 +26,15 @@
 </script>
 
 <!--checkboard -->
-<div class="w-100 aspect-square border border-base-content/10 flex-1"
+<div class="w-60 lg:w-80 xl:w-100 aspect-square border border-base-content/10 flex-1"
      style={settings.transparent ? checkerboard : ''}>
 
 <!--    exported content-->
     <div bind:clientWidth={width}
          bind:this={frame}
          class="relative w-full h-full"
-         style:background-color={settings.transparent ? 'transparent' : 'var(--color-base-content)'}>
+         // TODO: make bg color an user option
+         style:background-color={settings.transparent ? 'transparent' : 'white'}>
 
         <div class="absolute"
              style:height={pct(layout.cubeSide)} style:left={pct(layout.cubeX)}
