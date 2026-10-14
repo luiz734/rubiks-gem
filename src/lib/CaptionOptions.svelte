@@ -31,10 +31,10 @@
     }
 
     function onClickReset(): void {
-        settings.subtitle = "";
+        settings.caption = "";
     }
 
-    let clearVisible = $derived(settings.subtitle !== "")
+    let clearVisible = $derived(settings.caption !== "")
 </script>
 
 <div class="flex flex-col gap-y-4">
@@ -50,11 +50,11 @@
 
 
     <div class="flex flex-col gap-y-2">
-        <label class="fieldset-legend text-sm shrink-0" for="sub-value">Subtitle</label>
+        <label class="fieldset-legend text-sm shrink-0" for="sub-value">Caption</label>
 
         <div class="relative flex flex-1">
-            <input bind:value={settings.subtitle} class="input w-full pr-12" name="sub-value"
-                   placeholder="Subtitle (optional)"
+            <input bind:value={settings.caption} class="input w-full pr-12" name="sub-value"
+                   placeholder="Caption (optional)"
                    type="text"/>
             <div class="absolute -right-2 top-4 -translate-y-1/2">
                 {@render resetIcon()}
@@ -75,7 +75,7 @@
 
 {#snippet resetIcon()}
     <div class="max-w-32 h-8">
-        {#if settings.subtitle !== ""}
+        {#if settings.caption !== ""}
             <button onclick={onClickReset}
                     class="btn btn-link  text-base-content/20">
                 <RotateCcw class="" size={16}/>

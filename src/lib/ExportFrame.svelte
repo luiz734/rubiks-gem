@@ -15,7 +15,7 @@
     let width = $state(0)
 
     const layout = $derived(
-        computeLayout(settings.effectiveSize, settings.subtitle, settings.position)
+        computeLayout(settings.effectiveSize, settings.caption, settings.position)
     )
     const pct = (v: number) => `${(v / layout.size) * 100}%`
 
@@ -48,7 +48,7 @@
                       style:font-family="sans-serif"
                       style:color={settings.textColor}
                       style:font-size="{(layout.bandHeight / layout.size) * width * 0.6}px">
-                    {settings.subtitle}
+                    {settings.caption}
                 </span>
             </div>
         {/if}

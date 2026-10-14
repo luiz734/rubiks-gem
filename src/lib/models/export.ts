@@ -4,7 +4,7 @@ export const EXPORT_MIN_SIZE = 64
 export const EXPORT_MAX_SIZE = 1024
 const BAND_RATIO = 0.12
 
-export type SubtitlePosition = 'top' | 'bottom'
+export type CaptionPosition = 'top' | 'bottom'
 
 export type ExportLayout = {
     size: number
@@ -25,11 +25,11 @@ export function clampSize(value: number): number {
 
 export function computeLayout(
     requestedSize: number,
-    subtitle: string,
-    position: SubtitlePosition
+    caption: string,
+    position: CaptionPosition
 ): ExportLayout {
     const size = clampSize(requestedSize)
-    const bandHeight = subtitle.trim() ? Math.round(size * BAND_RATIO) : 0
+    const bandHeight = caption.trim() ? Math.round(size * BAND_RATIO) : 0
     const cubeSide = size - bandHeight
     const cubeY = position === 'top' ? bandHeight : 0
     return {

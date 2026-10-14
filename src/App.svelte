@@ -11,7 +11,7 @@
     import SaveOptions from "./lib/SaveOptions.svelte";
     import {ExportSettings} from "./lib/models/exportSettings.svelte.js";
     import ExportFrame from "./lib/ExportFrame.svelte";
-    import SubtitlesOptions from "./lib/SubtitlesOptions.svelte";
+    import CaptionOptions from "./lib/CaptionOptions.svelte";
     import {EXPORT_MAX_SIZE, EXPORT_MIN_SIZE} from "./lib/models/export";
     import {persist} from "./lib/models/persist.svelte";
 
@@ -61,8 +61,8 @@
             <RotationSlider rubiksCube={rubiksCube}/>
         </OptionsGroup>
 
-        <OptionsGroup description="Control how subtitles appear." title="Subtitles">
-            <SubtitlesOptions {settings} targetDiv={frame}/>
+        <OptionsGroup description="Control how caption appear." title="Caption">
+            <CaptionOptions {settings} targetDiv={frame}/>
         </OptionsGroup>
 
         <OptionsGroup description="Change colors of stikers, arrows and more." title="Colors">

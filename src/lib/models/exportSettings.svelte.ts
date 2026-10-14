@@ -2,10 +2,10 @@ import type { Persistable } from './persist.svelte'
 import { clampSize } from './export'
 import { HEX_COLOR_REGEX } from './colors'
 
-export const SUBTITLE_POSITIONS = ['top', 'bottom'] as const
-export type SubtitlePosition = (typeof SUBTITLE_POSITIONS)[number]
-export function isSubtitlePosition(value: unknown): value is SubtitlePosition {
-    return SUBTITLE_POSITIONS.includes(value as SubtitlePosition)
+export const CAPTION_POSITIONS = ['top', 'bottom'] as const
+export type CaptionPosition = (typeof CAPTION_POSITIONS)[number]
+export function isCaptionPosition(value: unknown): value is CaptionPosition {
+    return CAPTION_POSITIONS.includes(value as CaptionPosition)
 }
 
 export function isHexColor(value: string | null | undefined): boolean {
@@ -14,8 +14,8 @@ export function isHexColor(value: string | null | undefined): boolean {
 
 export class ExportSettings implements Persistable {
     size = $state(512)
-    subtitle = $state('')
-    position = $state<SubtitlePosition>('bottom')
+    caption = $state('')
+    position = $state<CaptionPosition>('bottom')
     textColor = $state('#000000')
     transparent = $state(false)
 
@@ -26,7 +26,7 @@ export class ExportSettings implements Persistable {
     serialize() {
         return {
             size: this.size,
-            subtitle: this.subtitle,
+            caption: this.caption,
             position: this.position,
             textColor: this.textColor,
             transparent: this.transparent,
@@ -37,9 +37,9 @@ export class ExportSettings implements Persistable {
         if (typeof data?.size === 'number' && Number.isFinite(data.size))
             this.size = data.size
 
-        if (typeof data?.subtitle === 'string') this.subtitle = data.subtitle
+        if (typeof data?.caption === 'string') this.caption = data.caption
 
-        if (isSubtitlePosition(data?.position)) this.position = data.position
+        if (isCaptionPosition(data?.position)) this.position = data.position
 
         if (isHexColor(data?.textColor)) this.textColor = data.textColor
 
