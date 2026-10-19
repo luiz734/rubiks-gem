@@ -15,6 +15,7 @@ export function isHexColor(value: string | null | undefined): boolean {
 export class ExportSettings implements Persistable {
     size = $state(512)
     caption = $state('')
+    captionBold = $state(true)
     position = $state<CaptionPosition>('bottom')
     textColor = $state('#000000')
     transparent = $state(false)
@@ -27,6 +28,7 @@ export class ExportSettings implements Persistable {
         return {
             size: this.size,
             caption: this.caption,
+            captionBold: this.captionBold,
             position: this.position,
             textColor: this.textColor,
             transparent: this.transparent,
@@ -38,6 +40,8 @@ export class ExportSettings implements Persistable {
             this.size = data.size
 
         if (typeof data?.caption === 'string') this.caption = data.caption
+
+        if (typeof data?.captionBold === 'boolean') this.captionBold = data.captionBold
 
         if (isCaptionPosition(data?.position)) this.position = data.position
 

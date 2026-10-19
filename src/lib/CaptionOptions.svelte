@@ -60,9 +60,12 @@
                 {@render resetIcon()}
             </div>
         </div>
-
-
     </div>
+
+    <label>
+        <input bind:checked={settings.captionBold} class="checkbox" type="checkbox" />
+        Bold
+    </label>
 </div>
 
 {#snippet clearButton()}

@@ -29,7 +29,7 @@
 <div class="w-60 lg:w-80 2xl:w-100 aspect-square border border-base-content/10 flex-1"
      style={settings.transparent ? checkerboard : ''}>
 
-<!--    exported content-->
+    <!--    exported content-->
     <div bind:clientWidth={width}
          bind:this={frame}
          class="relative w-full h-full"
@@ -45,7 +45,7 @@
         {#if layout.bandHeight > 0}
             <div class="absolute w-full flex items-center justify-center"
                  style:top={pct(layout.bandY)} style:height={pct(layout.bandHeight)}>
-                <span class="max-w-[94%] truncate"
+                <span class="max-w-[94%] truncate {settings.captionBold ? 'font-bold' : ''}"
                       style:font-family="sans-serif"
                       style:color={settings.textColor}
                       style:font-size="{(layout.bandHeight / layout.size) * width * 0.6}px">
