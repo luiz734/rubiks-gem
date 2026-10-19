@@ -8,27 +8,8 @@
     type Props = {
         targetDiv: HTMLElement | undefined
         settings: ExportSettings
-        filename?: string
     }
-    let {targetDiv, settings, filename = 'cube.png'}: Props = $props()
-
-    async function onClickDownload() {
-        if (!targetDiv) return
-
-        try {
-            const blob = await renderExport(targetDiv, settings.size)
-            if (!blob) return
-
-            const url = URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.download = filename
-            link.href = url
-            link.click()
-            URL.revokeObjectURL(url)
-        } catch (error) {
-            console.error('Could not export image', error)
-        }
-    }
+    let {targetDiv, settings}: Props = $props()
 
     function onClickReset(): void {
         settings.caption = "";

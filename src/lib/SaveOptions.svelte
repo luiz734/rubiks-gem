@@ -8,9 +8,19 @@
     type Props = {
         targetDiv: HTMLElement | undefined
         settings: ExportSettings
-        filename?: string
     }
-    let {targetDiv, settings, filename = 'cube.png'}: Props = $props()
+    let {targetDiv, settings}: Props = $props()
+
+    const filename = $derived(toFilename(settings.caption))
+
+    function toFilename(caption: string, fallback = 'cube'): string {
+        const base = caption
+            .trim()
+            .replace(/[\\/:*?"<>|]+/g, '')
+            .replace(/\s+/g, '-')
+            .slice(0, 60)
+        return `${base || fallback}.png`
+    }
 
     async function onClickDownload() {
         if (!targetDiv) return
